@@ -1,0 +1,8 @@
+*.asm
+*.o
+*.sh
+*.txt
+compare32
+compare64
+*.cpp
+.idea
