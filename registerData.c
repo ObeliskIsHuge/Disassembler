@@ -3,6 +3,8 @@
 #include <stdlib.h>
 
 #define TOTALAMOUNTOFREGISTERS 32
+#define REGISTERBITSIZE 5
+#define REGISTERNAMESIZE 5
 
 
 RegisterData registerTable[TOTALAMOUNTOFREGISTERS] = {
@@ -50,43 +52,61 @@ RegisterData* FindRegisterDataByBits(char* bits){
             RegisterData foundRegister = registerTable[i];
             RegisterData returnRegister;
 
-            char* resetPointerOne;
-            char* resetPointerTwo;
-            int bitSize = strlen(foundRegister.bits) + 1;
-            returnRegister.bits = (char *)calloc(bitSize,  sizeof(char));
+            // Arrays that will hold the data
+            char registerBits[REGISTERBITSIZE];
+            char registerName[REGISTERNAMESIZE];
 
+            // Pointers that will point to the data
+            returnRegister.bits = &registerBits[0];
+            returnRegister.registerName = &registerName[0];
 
-            resetPointerOne = returnRegister.bits;
-            resetPointerTwo = foundRegister.bits;
-            for(unsigned int i = 0; i < 5; i++){
-                *returnRegister.bits = *foundRegister.bits;
-                returnRegister.bits++;
-                foundRegister.bits++;
-            }
-            returnRegister.bits = resetPointerOne;
-            foundRegister.bits = resetPointerTwo;
+            // copy the strings over
+            strcpy(returnRegister.bits, foundRegister.bits);
+            strcpy(returnRegister.registerName, foundRegister.registerName);
 
+            // copies over the register field
             returnRegister.registerField = foundRegister.registerField;
 
-            int nameSize = strlen(foundRegister.registerName) + 1;
-            returnRegister.registerName = (char *)calloc(nameSize , sizeof(char));
-
-            int arraySize = strlen(foundRegister.registerName);
-
-            resetPointerOne = returnRegister.registerName;
-            resetPointerTwo = foundRegister.registerName;
-
-            for(unsigned int i = 0; i < arraySize; i++){
-                *returnRegister.registerName = *foundRegister.registerName;
-                returnRegister.registerName++;
-                foundRegister.registerName++;
-            }
-
-            returnRegister.registerName = resetPointerOne;
-            foundRegister.registerName = resetPointerTwo;
-
-            RegisterData * returnPointer = &returnRegister;
+            RegisterData* returnPointer = &returnRegister;
             return returnPointer;
+
+//            char* resetPointerOne;
+//            char* resetPointerTwo;
+//            int bitSize = strlen(foundRegister.bits) + 1;
+//            returnRegister.bits = (char *)calloc(bitSize,  sizeof(char));
+//
+//
+//            resetPointerOne = returnRegister.bits;
+//            resetPointerTwo = foundRegister.bits;
+//            for(unsigned int i = 0; i < 5; i++){
+//                *returnRegister.bits = *foundRegister.bits;
+//                returnRegister.bits++;
+//                foundRegister.bits++;
+//            }
+//            returnRegister.bits = resetPointerOne;
+//            foundRegister.bits = resetPointerTwo;
+//
+//            returnRegister.registerField = foundRegister.registerField;
+//
+//            int nameSize = strlen(foundRegister.registerName) + 1;
+//            returnRegister.registerName = (char *)calloc(nameSize , sizeof(char));
+//
+//            int arraySize = strlen(foundRegister.registerName);
+//
+//            resetPointerOne = returnRegister.registerName;
+//            resetPointerTwo = foundRegister.registerName;
+//
+//            for(unsigned int i = 0; i < arraySize; i++){
+//                *returnRegister.registerName = *foundRegister.registerName;
+//                returnRegister.registerName++;
+//                foundRegister.registerName++;
+//            }
+//
+//            returnRegister.registerName = resetPointerOne;
+//            foundRegister.registerName = resetPointerTwo;
+
+//            RegisterData * returnPointer = &returnRegister;
+//            return returnPointer;
         }
     }
 

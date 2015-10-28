@@ -5,7 +5,7 @@
 #ifndef DISSASEMBLER_FILEPROCESSING_H
 #define DISSASEMBLER_FILEPROCESSING_H
 
-
+#include <stdio.h>
 
 
 /**
