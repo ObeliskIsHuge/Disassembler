@@ -1,4 +1,4 @@
-OBJECTS =  main.c data.c iFormat.c lineDestruct.c registers.c rFormat.c symbols.c fileProcessing.c
+OBJECTS =  main.c fileProcessing.c miscFunctions.c opCodeData.c registerData.c
 CC = gcc
 CFLAGS = -std=c99 
 
