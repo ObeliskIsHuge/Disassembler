@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include <string.h>
+#include "fileProcessing.h"
 
 
 
@@ -46,15 +47,10 @@ int main(int argc , char* argv[]){
     // Holds the file that will contain all the binary data
     FILE* outputFile = fopen(outputFileName, "w+");
 
-    // Creates a file that is easier to parse
-    FILE* cleanFile = createCleanedFile(inputFile);
 
-    // Executes the commands from the cleaned file
-    parseCleanedFile(cleanFile , outputFile, executeSwitch);
 
     // Close all opened files
     fclose(inputFile);
-    fclose(cleanFile);
     fclose(outputFile);
 
     return 1;

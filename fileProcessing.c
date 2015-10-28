@@ -3,3 +3,13 @@
 //
 
 #include "fileProcessing.h"
+
+
+void parseTextSegment(FILE* inputFile, FILE* outputFile){
+
+}
+
+
+void parseDataSegment(FILE* inputFile, FILE* outputFile){
+
+}
