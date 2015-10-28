@@ -6,3 +6,4 @@ compare32
 compare64
 *.cpp
 .idea
+*.pdf
