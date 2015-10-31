@@ -12,4 +12,9 @@
  */
 int16_t stringBinaryToInt(char* string);
 
+/***
+ * Function returns the strings between the start and end indexes
+ */
+char* customSubString(unsigned short start, unsigned short end, char* inputString);
+
 #endif //DISSASEMBLER_MISCFUNCTIONS_H

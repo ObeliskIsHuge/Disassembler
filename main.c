@@ -5,7 +5,6 @@
 #include "fileProcessing.h"
 
 
-
 int main(int argc , char* argv[]){
 
 
@@ -47,8 +46,11 @@ int main(int argc , char* argv[]){
     // Holds the file that will contain all the binary data
     FILE* outputFile = fopen(outputFileName, "w+");
 
+    // Handles the text segment
+    parseTextSegment(inputFile , outputFile);
 
-
+    // Handles the output segment
+    parseDataSegment(inputFile, outputFile);
     // Close all opened files
     fclose(inputFile);
     fclose(outputFile);
