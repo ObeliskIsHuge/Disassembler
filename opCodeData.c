@@ -6,7 +6,7 @@
 #include <string.h>
 #include <stdlib.h>
 
-#define OPCODETABLESIZE 12
+#define OPCODETABLESIZE 20
 #define RTYPE 0
 #define ITYPE 1
 #define JTYPE 2
@@ -24,8 +24,12 @@ OpCodeData opCodeTable[OPCODETABLESIZE] = {
         {"001111", "lui", ITYPE},
         {"000110", "blez", ITYPE},
         {"100011", "lw", ITYPE},
+        {"000010", "j", JTYPE},
+        {"100010", "sub", RTYPE},
         {"001000", "addi", ITYPE},
+        {"001100", "syscall", RTYPE},
         {"101011", "sw", ITYPE},
+        {"100000", "add", RTYPE},
         {"001001", "addiu", ITYPE},
 
 };
