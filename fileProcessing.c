@@ -17,6 +17,7 @@
 #define RTYPE 0
 #define ITYPE 1
 #define JTYPE 2
+enum printType{data , text};
 
 
 void parseTextSegment(FILE* inputFile, FILE* outputFile){
@@ -34,13 +35,14 @@ void parseTextSegment(FILE* inputFile, FILE* outputFile){
     char* funct;
     char* sixteenImmediate;
     char* twoSixImmediate;
+    char printedStringArray[40];
+    char* printedString = &printedStringArray[0];
     OpCodeData* opCodeStruct;
 
 
     RegisterData* registerStruct;
 
     // reads entire input file
-
     while(!feof(inputFile)){
 
 
@@ -58,6 +60,11 @@ void parseTextSegment(FILE* inputFile, FILE* outputFile){
             // checks to see if the command is syscall
             if(strcmp(functStruct->name, "syscall") == 0){
 
+                strcpy(printedString, "0000000000000000000000000");
+                strcat(printedString , functStruct->bits);
+                printedStringArray[32] = '\n';
+
+                printToOutputFile(true, printedString, outputFile);
                 // isn't syscall
             } else {
                 rs = customSubString(6 , 10, pLine);
@@ -92,4 +99,22 @@ void parseTextSegment(FILE* inputFile, FILE* outputFile){
 
 void parseDataSegment(FILE* inputFile, FILE* outputFile){
 
+}
+
+
+
+void printToOutputFile(bool includeSpace , char* outputString, FILE* outputFile){
+
+    char* printString = (char *)calloc(100, sizeof(char *));
+
+    // adds space if true
+    if(includeSpace){
+        strcpy(printString, "\t\t");
+
+    }
+
+    strcat(printString, outputString);
+    fprintf(outputFile , "%s" , printString);
+
+    free(printString);
 }
