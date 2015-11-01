@@ -40,10 +40,10 @@ void parseTextSegment(FILE* inputFile, FILE* outputFile){
 
     // sturcts that will be used to hold to the register information
     OpCodeData* opCodeStruct;
+    OpCodeData* functStruct;
     RegisterData* rsStruct;
     RegisterData* rtStruct;
     RegisterData* rdStruct;
-    RegisterData* functStruct;
 
     // reads entire input file
     while(!feof(inputFile)){
@@ -67,8 +67,7 @@ void parseTextSegment(FILE* inputFile, FILE* outputFile){
             // checks to see if the command is syscall
             if(strcmp(functStruct->name, "syscall") == 0){
 
-                strcpy(printedString, "0000000000000000000000000");
-                strcat(printedString , functStruct->bits);
+                strcpy(printedString, "syscall\n");
                 printedStringArray[32] = '\n';
 
                 printToOutputFile(true, printedString, outputFile);
