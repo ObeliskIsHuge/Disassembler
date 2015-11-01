@@ -37,14 +37,21 @@ void parseTextSegment(FILE* inputFile, FILE* outputFile){
     char* twoSixImmediate;
     char printedStringArray[40];
     char* printedString = &printedStringArray[0];
+
+    // sturcts that will be used to hold to the register information
     OpCodeData* opCodeStruct;
-
-
-    RegisterData* registerStruct;
+    RegisterData* rsStruct;
+    RegisterData* rtStruct;
+    RegisterData* rdStruct;
+    RegisterData* functStruct;
 
     // reads entire input file
     while(!feof(inputFile)){
 
+
+        // clear the arrays of previous data
+        memset(line, '\0', sizeof(line));
+        memset(printedStringArray, '\0', sizeof(printedStringArray));
 
         fgets(line, MAX_LINE_SIZE, inputFile);
 
@@ -55,7 +62,7 @@ void parseTextSegment(FILE* inputFile, FILE* outputFile){
         if(opCodeStruct->formatType == RTYPE){
 
             funct = customSubString(26 , 31, pLine);
-            OpCodeData* functStruct = FindOpCodeByBits(funct);
+            functStruct = FindOpCodeByBits(funct);
 
             // checks to see if the command is syscall
             if(strcmp(functStruct->name, "syscall") == 0){
@@ -67,10 +74,35 @@ void parseTextSegment(FILE* inputFile, FILE* outputFile){
                 printToOutputFile(true, printedString, outputFile);
                 // isn't syscall
             } else {
+                // handles rs info
                 rs = customSubString(6 , 10, pLine);
+                rsStruct = FindRegisterDataByBits(rs);
+
+                // handles rt info
                 rt = customSubString(11 , 15, pLine);
+                rtStruct = FindRegisterDataByBits(rt);
+
+                // handles rd info
                 rd = customSubString(16 , 20, pLine);
+                rdStruct = FindRegisterDataByBits(rd);
+
+                //TODO what to do here?
                 shamt = customSubString(21 , 25, pLine);
+
+
+                // Builds the string that will be printed
+                strcat(printedString, functStruct->name);
+                strcat(printedString, "\t");
+                strcat(printedString, rdStruct->registerName);
+                strcat(printedString, ", ");
+                strcat(printedString, rsStruct->registerName);
+                strcat(printedString, ", ");
+                strcat(printedString, rtStruct->registerName);
+                strcat(printedString, "\n");
+
+
+                // prints to output file
+                printToOutputFile(false, printedString, outputFile);
             }
 
 
