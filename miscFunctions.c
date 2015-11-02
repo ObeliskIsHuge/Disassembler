@@ -2,12 +2,16 @@
 // Created by brandon on 10/28/15.
 //
 
+#include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
+
 #include "miscFunctions.h"
 
 
-int16_t stringBinaryToInt(char* string){
+int stringBinaryToInt(char* string){
 
-    int16_t total = 0;
+    int total = 0;
     while (*string){
         total *= 2;
         if (*string++ == '1'){
@@ -43,4 +47,24 @@ char* customSubString(unsigned short start, unsigned short end, char* inputStrin
     pLine = &stringHolder[0];
 
     return pLine;
+}
+
+char* convertBinToDecString(char* binaryString){
+
+    char storageString[50];
+    char* stringPointer = &storageString[0];
+    int immediate;
+
+    // converts the binary string to an integer
+    immediate = stringBinaryToInt(binaryString);
+
+    char* tempNameArray = (char *)calloc(100, sizeof(char *));
+    sprintf(tempNameArray, "%d", immediate);
+
+    // copies the string over to a permanent location
+    strcpy(stringPointer, tempNameArray);
+
+    free(tempNameArray);
+
+    return stringPointer;
 }

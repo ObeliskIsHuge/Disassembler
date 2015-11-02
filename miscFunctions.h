@@ -5,16 +5,20 @@
 #ifndef DISSASEMBLER_MISCFUNCTIONS_H
 #define DISSASEMBLER_MISCFUNCTIONS_H
 
-#include <inttypes.h>
 
 /***
  * Takes a binary string and returns the integer value
  */
-int16_t stringBinaryToInt(char* string);
+int stringBinaryToInt(char* string);
 
 /***
  * Function returns the strings between the start and end indexes
  */
 char* customSubString(unsigned short start, unsigned short end, char* inputString);
+
+/***
+ * Converts a Binary String to a decimal string
+ */
+char* convertBinToDecString(char* binaryString);
 
 #endif //DISSASEMBLER_MISCFUNCTIONS_H

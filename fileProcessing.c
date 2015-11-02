@@ -4,12 +4,12 @@
 
 #include <stdlib.h>
 #include <string.h>
-#include <inttypes.h>
 
 #include "fileProcessing.h"
 #include "miscFunctions.h"
 #include "opCodeData.h"
 #include "registerData.h"
+#include "SymbolTable.h"
 
 
 #define MAX_LINE_SIZE 150
@@ -18,7 +18,6 @@
 #define RTYPE 0
 #define ITYPE 1
 #define JTYPE 2
-enum printType{data , text};
 
 
 void parseTextSegment(FILE* inputFile, FILE* outputFile){
@@ -107,7 +106,7 @@ void parseTextSegment(FILE* inputFile, FILE* outputFile){
 
             // checks to see if the instruction is 'addi'
             if(strcmp(opCodeStruct->name, "addi") == 0){
-                int16_t parsedSixteenImm;
+                int parsedSixteenImm;
 
                 // Gets the 'rs' register data
                 rs = customSubString(6 , 10, pLine);
@@ -119,9 +118,7 @@ void parseTextSegment(FILE* inputFile, FILE* outputFile){
 
                 // converts the immediate and gets it to a printable format
                 sixteenImmediate = customSubString(16 , 31, pLine);
-                parsedSixteenImm = stringBinaryToInt(sixteenImmediate);
-                char* sixteenBitString = (char *)calloc(100, sizeof(char *));
-                sprintf(sixteenBitString, "%d", parsedSixteenImm);
+                char* sixteenBitString = convertBinToDecString(sixteenImmediate);
 
                 // builds the print string
                 strcat(printedString, opCodeStruct->name);
