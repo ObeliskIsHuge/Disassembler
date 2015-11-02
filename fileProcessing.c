@@ -4,6 +4,7 @@
 
 #include <stdlib.h>
 #include <string.h>
+#include <inttypes.h>
 
 #include "fileProcessing.h"
 #include "miscFunctions.h"
@@ -88,7 +89,6 @@ void parseTextSegment(FILE* inputFile, FILE* outputFile){
                 //TODO what to do here?
                 shamt = customSubString(21 , 25, pLine);
 
-
                 // Builds the string that will be printed
                 strcat(printedString, functStruct->name);
                 strcat(printedString, "\t");
@@ -99,21 +99,46 @@ void parseTextSegment(FILE* inputFile, FILE* outputFile){
                 strcat(printedString, rtStruct->registerName);
                 strcat(printedString, "\n");
 
-
                 // prints to output file
                 printToOutputFile(false, printedString, outputFile);
             }
-
-
-
             // I-type instruction
         } else if (opCodeStruct->formatType == ITYPE){
 
-            rs = customSubString(6 , 10, pLine);
-            rt = customSubString(11 , 15, pLine);
-            sixteenImmediate = customSubString(16 , 31, pLine);
+            // checks to see if the instruction is 'addi'
+            if(strcmp(opCodeStruct->name, "addi") == 0){
+                int16_t parsedSixteenImm;
 
+                // Gets the 'rs' register data
+                rs = customSubString(6 , 10, pLine);
+                rsStruct = FindRegisterDataByBits(rs);
 
+                // Gets the 'rt' register data
+                rt = customSubString(11 , 15, pLine);
+                rtStruct = FindRegisterDataByBits(rt);
+
+                // converts the immediate and gets it to a printable format
+                sixteenImmediate = customSubString(16 , 31, pLine);
+                parsedSixteenImm = stringBinaryToInt(sixteenImmediate);
+                char* sixteenBitString = (char *)calloc(100, sizeof(char *));
+                sprintf(sixteenBitString, "%d", parsedSixteenImm);
+
+                // builds the print string
+                strcat(printedString, opCodeStruct->name);
+                strcat(printedString, "\t");
+                strcat(printedString, rsStruct->registerName);
+                strcat(printedString, ", ");
+                strcat(printedString, rtStruct->registerName);
+                strcat(printedString, ", ");
+                strcat(printedString, sixteenBitString);
+                strcat(printedString, "\n");
+
+                // frees the string
+                free(sixteenBitString);
+
+                // prints the string
+                printToOutputFile(false, printedString, outputFile);
+            }
 
             // J-type instruction
         } else {
