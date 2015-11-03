@@ -61,7 +61,7 @@ void parseTextSegment(FILE* inputFile, FILE* outputFile){
             break;
         }
 
-        opCode = customSubString(0 , 5 , pLine);
+        opCode = customSubString(0 , 6 , pLine);
         opCodeStruct = FindOpCodeByBits(opCode);
 
         // R-type instruction
@@ -114,15 +114,15 @@ void parseTextSegment(FILE* inputFile, FILE* outputFile){
             if(strcmp(opCodeStruct->name, "addi") == 0){
 
                 // Gets the 'rs' register data
-                rs = customSubString(6 , 10, pLine);
+                rs = customSubString(7 , 11, pLine);
                 rsStruct = FindRegisterDataByBits(rs);
 
                 // Gets the 'rt' register data
-                rt = customSubString(11 , 15, pLine);
+                rt = customSubString(12 , 16, pLine);
                 rtStruct = FindRegisterDataByBits(rt);
 
                 // converts the immediate and gets it to a printable format
-                sixteenImmediate = customSubString(16 , 31, pLine);
+                sixteenImmediate = customSubString(17 , 32, pLine);
                 char* sixteenBitString = convertBinToDecString(sixteenImmediate);
 
                 // builds the print string
@@ -144,14 +144,14 @@ void parseTextSegment(FILE* inputFile, FILE* outputFile){
             } else if(strcmp(opCodeStruct->name, "beq") == 0){
 
                 // Gets the 'rs' register data
-                rs = customSubString(6 , 10, pLine);
+                rs = customSubString(7 , 11, pLine);
                 rsStruct = FindRegisterDataByBits(rs);
 
                 // Gets the 'rt' register data
-                rt = customSubString(11 , 15, pLine);
+                rt = customSubString(12 , 16, pLine);
                 rtStruct = FindRegisterDataByBits(rt);
 
-                sixteenImmediate = customSubString(16, 31, pLine);
+                sixteenImmediate = customSubString(17, 32, pLine);
 
                 // Gets the address that the 16-bit immediate references
                 char* tempAddress = convertBinToDecString(sixteenImmediate);
@@ -177,15 +177,15 @@ void parseTextSegment(FILE* inputFile, FILE* outputFile){
                 char* basePointer;
 
                 // reads the 'base' value
-                basePointer = customSubString(6 , 10, pLine);
+                basePointer = customSubString(7 , 11, pLine);
                 base = stringBinaryToInt(basePointer);
 
                 // reads the 'rt' Value
-                rt = customSubString(11 , 15, pLine);
+                rt = customSubString(12 , 16, pLine);
                 rtStruct = FindRegisterDataByBits(rt);
 
                 // converts 16-bit and does the math to find the address
-                sixteenImmediate = customSubString(16, 31, pLine);
+                sixteenImmediate = customSubString(17, 32, pLine);
                 newAddress = stringBinaryToInt(sixteenImmediate) + base;
                 char* addressString = (char *)calloc(100, sizeof(char *));
                 sprintf(addressString, "%d", newAddress);
@@ -208,7 +208,7 @@ void parseTextSegment(FILE* inputFile, FILE* outputFile){
             // J-type instruction
         } else {
 
-            twoSixImmediate = customSubString(6 , 31, pLine);
+            twoSixImmediate = customSubString(7 , 32, pLine);
 
         }
 
