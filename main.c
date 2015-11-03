@@ -3,6 +3,7 @@
 #include <stdbool.h>
 #include <string.h>
 #include "fileProcessing.h"
+#include "SymbolTable.h"
 
 
 int main(int argc , char* argv[]){
@@ -40,17 +41,23 @@ int main(int argc , char* argv[]){
         executeSwitch = true;
     }
 
-
     FILE* inputFile = fopen(inputFileName , "r+");
 
     // Holds the file that will contain all the binary data
     FILE* outputFile = fopen(outputFileName, "w+");
 
+    // Handles the output segment
+    parseDataSegment(inputFile);
+
+    // resets the file pointer
+    rewind(inputFile);
+
     // Handles the text segment
     parseTextSegment(inputFile , outputFile);
 
-    // Handles the output segment
-    parseDataSegment(inputFile, outputFile);
+    // prints the symbol table
+    printSymbolTable(outputFile);
+
     // Close all opened files
     fclose(inputFile);
     fclose(outputFile);

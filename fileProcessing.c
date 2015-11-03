@@ -46,15 +46,15 @@ void parseTextSegment(FILE* inputFile, FILE* outputFile){
     RegisterData* rdStruct;
     SymbolTable* symbolValue;
 
-    // reads entire input file
-    while(!feof(inputFile)){
+    // prints the '.text' section
+    printToOutputFile(false, ".text", outputFile);
+    printToOutputFile(false, "main:\t", outputFile);
 
+    fgets(line, MAX_LINE_SIZE, inputFile);
 
-        // clear the arrays of previous data
-        memset(line, '\0', sizeof(line));
-        memset(printedStringArray, '\0', sizeof(printedStringArray));
+    // Keeps running until the new line is found
+    while(strcmp(pLine, "\n") != 0){
 
-        fgets(line, MAX_LINE_SIZE, inputFile);
 
         // stop when we've reached the new line
         if(strcmp(pLine, "\n") == 0){
@@ -200,7 +200,6 @@ void parseTextSegment(FILE* inputFile, FILE* outputFile){
                 strcat(printedString, symbolValue->name);
                 strcat(printedString, "\n");
 
-
                 printToOutputFile(false, printedString, outputFile);
 
                 free(addressString);
@@ -212,12 +211,18 @@ void parseTextSegment(FILE* inputFile, FILE* outputFile){
             twoSixImmediate = customSubString(6 , 31, pLine);
 
         }
+
+        // clear the arrays of previous data
+        memset(line, '\0', sizeof(line));
+        memset(printedStringArray, '\0', sizeof(printedStringArray));
+
+        fgets(line, MAX_LINE_SIZE, inputFile);
     }
 
 }
 
 
-void parseDataSegment(FILE* inputFile, FILE* outputFile){
+void parseDataSegment(FILE* inputFile){
 
     char line[MAX_LINE_SIZE];
     char* pLine = &line[0];
@@ -227,6 +232,12 @@ void parseDataSegment(FILE* inputFile, FILE* outputFile){
     char nameArray[50];
     char* tempNameArray = &nameArray[50];
     char* lineValue;
+
+    // Keeps running until a new line is found
+    while(strcmp(fgets(pLine,1 , inputFile), "\n") == 0){
+        // clear line array for new value
+        memset(line, '\0', sizeof(line));
+    }
 
     while(!feof(inputFile)){
 
