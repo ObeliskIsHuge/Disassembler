@@ -7,6 +7,7 @@
 #include <string.h>
 #include <stdlib.h>
 
+#define MAX_LINE_SIZE 150
 
 static int sizeOfSymbolArray = 0;
 
@@ -91,7 +92,7 @@ void printSymbolTable(FILE* outputFile){
     printToOutputFile(false, ".data\n", outputFile);
 
     // Iterates over the entire symbolArray
-    for(unsigned int i = sizeOfSymbolArray; i >= 0; i--){
+    for(unsigned int i = 0; i <= sizeOfSymbolArray; i++){
 
         symbolAtIndex = symbolArray[i];
 

@@ -112,7 +112,6 @@ void parseTextSegment(FILE* inputFile, FILE* outputFile){
 
             // checks to see if the instruction is 'addi'
             if(strcmp(opCodeStruct->name, "addi") == 0){
-                int parsedSixteenImm;
 
                 // Gets the 'rs' register data
                 rs = customSubString(6 , 10, pLine);
@@ -167,11 +166,44 @@ void parseTextSegment(FILE* inputFile, FILE* outputFile){
                 strcat(printedString, ", ");
                 strcat(printedString, symbolValue->name);
 
-
                 // prints to output file
                 printToOutputFile(false, printedString, outputFile);
 
+                // will be true when the command is 'lw' or 'sw'
+            } else if (strcmp(opCodeStruct->name, "sw") == 0 || strcmp(opCodeStruct->name, "lw") == 0){
 
+                int base;
+                int newAddress;
+                char* basePointer;
+
+                // reads the 'base' value
+                basePointer = customSubString(6 , 10, pLine);
+                base = stringBinaryToInt(basePointer);
+
+                // reads the 'rt' Value
+                rt = customSubString(11 , 15, pLine);
+                rtStruct = FindRegisterDataByBits(rt);
+
+                // converts 16-bit and does the math to find the address
+                sixteenImmediate = customSubString(16, 31, pLine);
+                newAddress = stringBinaryToInt(sixteenImmediate) + base;
+                char* addressString = (char *)calloc(100, sizeof(char *));
+                sprintf(addressString, "%d", newAddress);
+
+                // Gets the address of the instruction
+                symbolValue = getSymbolByAddress(addressString);
+
+                strcat(printedString, opCodeStruct->name);
+                strcat(printedString, "\t");
+                strcat(printedString, rtStruct->registerName);
+                strcat(printedString, ", ");
+                strcat(printedString, symbolValue->name);
+                strcat(printedString, "\n");
+
+
+                printToOutputFile(false, printedString, outputFile);
+
+                free(addressString);
             }
 
             // J-type instruction
@@ -180,8 +212,6 @@ void parseTextSegment(FILE* inputFile, FILE* outputFile){
             twoSixImmediate = customSubString(6 , 31, pLine);
 
         }
-
-
     }
 
 }
@@ -200,7 +230,6 @@ void parseDataSegment(FILE* inputFile, FILE* outputFile){
 
     while(!feof(inputFile)){
 
-
         // clear the arrays of previous data
         memset(line, '\0', sizeof(line));
         memset(printedStringArray, '\0', sizeof(printedStringArray));
@@ -210,7 +239,6 @@ void parseDataSegment(FILE* inputFile, FILE* outputFile){
         // converts the binary string to a decimal string
         lineValue = convertBinToDecString(pLine);
 
-
         sprintf(tempNameArray, "%d", currentAddress);
 
         // inserts the value to the symbol table
@@ -219,7 +247,6 @@ void parseDataSegment(FILE* inputFile, FILE* outputFile){
         currentAddress += 4;
         memset(tempNameArray, '\0', sizeof(tempNameArray));
     }
-
 
 }
 
