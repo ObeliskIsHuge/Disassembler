@@ -5,6 +5,7 @@
 #include "SymbolTable.h"
 #include <string.h>
 #include <stdlib.h>
+#include <stdio.h>
 
 #define SIZEOFSYMBOLARRAY 0
 
@@ -58,7 +59,7 @@ void insertValueToTable(char* value, char* address){
 
     symbolArray[SIZEOFSYMBOLARRAY] = newTable;
 
-    SIZEOFSYMBOLARRAY++;
+    SIZEOFSYMBOLARRAY = SIZEOFSYMBOLARRAY + 1;
 
 }
 

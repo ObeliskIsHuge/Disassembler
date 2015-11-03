@@ -44,6 +44,7 @@ void parseTextSegment(FILE* inputFile, FILE* outputFile){
     RegisterData* rsStruct;
     RegisterData* rtStruct;
     RegisterData* rdStruct;
+    SymbolTable* symbolValue;
 
     // reads entire input file
     while(!feof(inputFile)){
@@ -54,6 +55,11 @@ void parseTextSegment(FILE* inputFile, FILE* outputFile){
         memset(printedStringArray, '\0', sizeof(printedStringArray));
 
         fgets(line, MAX_LINE_SIZE, inputFile);
+
+        // stop when we've reached the new line
+        if(strcmp(pLine, "\n") == 0){
+            break;
+        }
 
         opCode = customSubString(0 , 5 , pLine);
         opCodeStruct = FindOpCodeByBits(opCode);
@@ -135,6 +141,37 @@ void parseTextSegment(FILE* inputFile, FILE* outputFile){
 
                 // prints the string
                 printToOutputFile(false, printedString, outputFile);
+                // will be true when the instruction is 'beq'
+            } else if(strcmp(opCodeStruct->name, "beq") == 0){
+
+                // Gets the 'rs' register data
+                rs = customSubString(6 , 10, pLine);
+                rsStruct = FindRegisterDataByBits(rs);
+
+                // Gets the 'rt' register data
+                rt = customSubString(11 , 15, pLine);
+                rtStruct = FindRegisterDataByBits(rt);
+
+                sixteenImmediate = customSubString(16, 31, pLine);
+
+                // Gets the address that the 16-bit immediate references
+                char* tempAddress = convertBinToDecString(sixteenImmediate);
+
+                symbolValue = getSymbolByAddress(tempAddress);
+
+                strcat(printedString, opCodeStruct->name);
+                strcat(printedString, "\t");
+                strcat(printedString, rsStruct->registerName);
+                strcat(printedString, ", ");
+                strcat(printedString, rtStruct->registerName);
+                strcat(printedString, ", ");
+                strcat(printedString, symbolValue->name);
+
+
+                // prints to output file
+                printToOutputFile(false, printedString, outputFile);
+
+
             }
 
             // J-type instruction
@@ -151,6 +188,38 @@ void parseTextSegment(FILE* inputFile, FILE* outputFile){
 
 
 void parseDataSegment(FILE* inputFile, FILE* outputFile){
+
+    char line[MAX_LINE_SIZE];
+    char* pLine = &line[0];
+    char printedStringArray[40];
+    char* printedString = &printedStringArray[0];
+    int currentAddress = DATA_SEGMENT_START;
+    char nameArray[50];
+    char* tempNameArray = &nameArray[50];
+    char* lineValue;
+
+    while(!feof(inputFile)){
+
+
+        // clear the arrays of previous data
+        memset(line, '\0', sizeof(line));
+        memset(printedStringArray, '\0', sizeof(printedStringArray));
+
+        fgets(line, MAX_LINE_SIZE, inputFile);
+
+        // converts the binary string to a decimal string
+        lineValue = convertBinToDecString(pLine);
+
+
+        sprintf(tempNameArray, "%d", currentAddress);
+
+        // inserts the value to the symbol table
+        insertValueToTable(lineValue, tempNameArray);
+
+        currentAddress += 4;
+        memset(tempNameArray, '\0', sizeof(tempNameArray));
+    }
+
 
 }
 
