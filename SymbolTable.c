@@ -9,6 +9,8 @@
 
 #define SIZEOFSYMBOLARRAY 0
 
+static int sizeOfSymbolArray = 0;
+
 static SymbolTable symbolArray[30] = {
 
 };
@@ -43,7 +45,7 @@ void insertValueToTable(char* value, char* address){
     // handles the naming
     char* tempNameArray = (char *)calloc(100, sizeof(char *));
     strcat(newTable.name, "V0");
-    sprintf(tempNameArray, "%d", SIZEOFSYMBOLARRAY);
+    sprintf(tempNameArray, "%d", sizeOfSymbolArray);
     strcat(newTable.name, tempNameArray);
 
     // copies over the type
@@ -57,9 +59,10 @@ void insertValueToTable(char* value, char* address){
 
     free(tempNameArray);
 
-    symbolArray[SIZEOFSYMBOLARRAY] = newTable;
+    symbolArray[sizeOfSymbolArray] = newTable;
 
-    SIZEOFSYMBOLARRAY = SIZEOFSYMBOLARRAY + 1;
+//    SIZEOFSYMBOLARRAY = SIZEOFSYMBOLARRAY + 1;
+    sizeOfSymbolArray++;
 
 }
 
@@ -67,7 +70,7 @@ void insertValueToTable(char* value, char* address){
 SymbolTable* getSymbolByAddress(char* address){
 
     // Iterates over the entire symbol array
-    for(int i = 0; i <= SIZEOFSYMBOLARRAY; i++){
+    for(int i = 0; i <= sizeOfSymbolArray; i++){
 
         // will only be true if the addresses are equal
         if(strcmp(symbolArray[i].address, address) == 0){
