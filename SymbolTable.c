@@ -3,11 +3,10 @@
 //
 
 #include "SymbolTable.h"
+#include "fileProcessing.h"
 #include <string.h>
 #include <stdlib.h>
-#include <stdio.h>
 
-#define SIZEOFSYMBOLARRAY 0
 
 static int sizeOfSymbolArray = 0;
 
@@ -61,7 +60,6 @@ void insertValueToTable(char* value, char* address){
 
     symbolArray[sizeOfSymbolArray] = newTable;
 
-//    SIZEOFSYMBOLARRAY = SIZEOFSYMBOLARRAY + 1;
     sizeOfSymbolArray++;
 
 }
@@ -80,4 +78,31 @@ SymbolTable* getSymbolByAddress(char* address){
     }
 
     return NULL;
+}
+
+
+void printSymbolTable(FILE* outputFile){
+
+    char line[MAX_LINE_SIZE];
+    char* pLine = line;
+    SymbolTable symbolAtIndex;
+
+    // prints the
+    printToOutputFile(false, ".data\n", outputFile);
+
+    // Iterates over the entire symbolArray
+    for(unsigned int i = sizeOfSymbolArray; i >= 0; i--){
+
+        symbolAtIndex = symbolArray[i];
+
+        // builds and prints each line of the '.data' section
+        strcat(pLine, symbolAtIndex.name);
+        strcat(pLine, "\t\t");
+        strcat(pLine, symbolAtIndex.type);
+        strcat(pLine, " ");
+        strcat(pLine, symbolAtIndex.value);
+        strcat(pLine, "\n");
+        printToOutputFile(false, pLine, outputFile);
+    }
+
 }

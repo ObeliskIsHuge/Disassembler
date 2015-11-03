@@ -5,6 +5,7 @@
 #ifndef DISASSEMBLER_SYMBOLTABLE_H
 #define DISASSEMBLER_SYMBOLTABLE_H
 
+#include <stdio.h>
 
 struct _SymbolTable{
 
@@ -30,4 +31,9 @@ void insertValueToTable(char* value, char* address);
  * Returns the symbol struct associated with the address
  */
 SymbolTable* getSymbolByAddress(char* address);
+
+/***
+ * Prints the symbol table
+ */
+void printSymbolTable(FILE* outputFile);
 #endif //DISASSEMBLER_SYMBOLTABLE_H
