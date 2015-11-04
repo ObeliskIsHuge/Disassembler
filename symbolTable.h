@@ -7,7 +7,7 @@
 
 #include <stdio.h>
 
-struct _SymbolTable{
+struct _Symbol{
 
     char* name;
     char* type;
@@ -15,12 +15,13 @@ struct _SymbolTable{
     char* address;
 };
 
-typedef struct _SymbolTable SymbolTable;
+typedef struct _Symbol Symbol;
+
 
 /***
  * Creates a valid SymbolData
  */
-void symbolTableInit(SymbolTable* table);
+void symbolInit(Symbol* symbol);
 
 /***
  * Inserts a value to the table
@@ -30,7 +31,7 @@ void insertValueToTable(char* value, char* address);
 /***
  * Returns the symbol struct associated with the address
  */
-SymbolTable* getSymbolByAddress(char* address);
+Symbol* getSymbolByAddress(char* address);
 
 /***
  * Prints the symbol table

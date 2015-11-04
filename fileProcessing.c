@@ -44,7 +44,7 @@ void parseTextSegment(FILE* inputFile, FILE* outputFile){
     RegisterData* rsStruct;
     RegisterData* rtStruct;
     RegisterData* rdStruct;
-    SymbolTable* symbolValue;
+    Symbol* symbolValue;
 
     // prints the '.text' section
     printToOutputFile(false, ".text", outputFile);

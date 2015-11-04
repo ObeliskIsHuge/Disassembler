@@ -11,7 +11,7 @@
 
 static int sizeOfSymbolArray = 0;
 
-static SymbolTable symbolArray[30] = {
+static Symbol symbolArray[30] = {
 
 };
 
@@ -20,7 +20,7 @@ static SymbolTable symbolArray[30] = {
 /***
  * Creates a valid SymbolData
  */
-void symbolTableInit(SymbolTable* symbol){
+void symbolInit(Symbol* symbol){
 
     char nameArray[50];
     char typeArray[50];
@@ -44,8 +44,8 @@ void symbolTableInit(SymbolTable* symbol){
  */
 void insertValueToTable(char* value, char* address){
 
-    SymbolTable newTable;
-    symbolTableInit(&newTable);
+    Symbol newTable;
+    symbolInit(&newTable);
 
     sizeOfSymbolArray++;
 
@@ -69,12 +69,10 @@ void insertValueToTable(char* value, char* address){
 
     symbolArray[sizeOfSymbolArray] = newTable;
 
-
-
 }
 
 
-SymbolTable* getSymbolByAddress(char* address){
+Symbol* getSymbolByAddress(char* address){
 
     // Iterates over the entire symbol array
     for(int i = 0; i <= sizeOfSymbolArray; i++){
@@ -94,9 +92,9 @@ void printSymbolTable(FILE* outputFile){
 
     char line[MAX_LINE_SIZE];
     char* pLine = line;
-    SymbolTable symbolAtIndex;
+    Symbol symbolAtIndex;
 
-    // prints the
+    // prints the .data text
     printToOutputFile(false, ".data\n", outputFile);
 
     // Iterates over the entire symbolArray
