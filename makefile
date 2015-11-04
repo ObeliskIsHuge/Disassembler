@@ -1,4 +1,4 @@
-OBJECTS =  main.c fileProcessing.c miscFunctions.c opCodeData.c registerData.c SymbolTable.c
+OBJECTS =  main.c fileProcessing.c miscFunctions.c opCodeData.c registerData.c symbolTable.c
 CC = gcc
 CFLAGS = -std=c99 -g -o
 

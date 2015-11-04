@@ -3,7 +3,7 @@
 #include <stdbool.h>
 #include <string.h>
 #include "fileProcessing.h"
-#include "SymbolTable.h"
+#include "symbolTable.h"
 
 
 int main(int argc , char* argv[]){

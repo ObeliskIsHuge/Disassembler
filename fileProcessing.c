@@ -9,7 +9,7 @@
 #include "miscFunctions.h"
 #include "opCodeData.h"
 #include "registerData.h"
-#include "SymbolTable.h"
+#include "symbolTable.h"
 
 
 #define MAX_LINE_SIZE 150
@@ -233,10 +233,14 @@ void parseDataSegment(FILE* inputFile){
     char* tempNameArray = &nameArray[50];
     char* lineValue;
 
+    fgets(line, MAX_LINE_SIZE, inputFile);
+    memset(tempNameArray, '\0', sizeof(tempNameArray));
+
     // Keeps running until a new line is found
-    while(strcmp(fgets(pLine,1 , inputFile), "\n") == 0){
+    while(strcmp(pLine, "\n") != 0){
         // clear line array for new value
         memset(line, '\0', sizeof(line));
+        fgets(line, MAX_LINE_SIZE, inputFile);
     }
 
     while(!feof(inputFile)){
@@ -246,6 +250,11 @@ void parseDataSegment(FILE* inputFile){
         memset(printedStringArray, '\0', sizeof(printedStringArray));
 
         fgets(line, MAX_LINE_SIZE, inputFile);
+
+        // break the loop if we process a new line character
+        if(strcmp(pLine, "\n") == 0){
+            break;
+        }
 
         // converts the binary string to a decimal string
         lineValue = convertBinToDecString(pLine);

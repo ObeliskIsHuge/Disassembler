@@ -2,7 +2,7 @@
 // Created by brandon on 11/1/15.
 //
 
-#include "SymbolTable.h"
+#include "symbolTable.h"
 #include "fileProcessing.h"
 #include <string.h>
 #include <stdlib.h>
@@ -27,6 +27,11 @@ void symbolTableInit(SymbolTable* symbol){
     char valueArray[50];
     char addressArray[50];
 
+    memset(nameArray, '\0', sizeof(nameArray));
+    memset(typeArray, '\0', sizeof(typeArray));
+    memset(valueArray, '\0', sizeof(valueArray));
+    memset(addressArray, '\0', sizeof(addressArray));
+
     symbol->name = &nameArray[0];
     symbol->type = &typeArray[0];
     symbol->value = &valueArray[0];
@@ -42,11 +47,14 @@ void insertValueToTable(char* value, char* address){
     SymbolTable newTable;
     symbolTableInit(&newTable);
 
+    sizeOfSymbolArray++;
+
     // handles the naming
     char* tempNameArray = (char *)calloc(100, sizeof(char *));
-    strcat(newTable.name, "V0");
+    strcpy(newTable.name, "V0");
     sprintf(tempNameArray, "%d", sizeOfSymbolArray);
     strcat(newTable.name, tempNameArray);
+    strcat(newTable.name, ":");
 
     // copies over the type
     strcpy(newTable.type, ".word");
@@ -61,7 +69,7 @@ void insertValueToTable(char* value, char* address){
 
     symbolArray[sizeOfSymbolArray] = newTable;
 
-    sizeOfSymbolArray++;
+
 
 }
 
