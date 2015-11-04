@@ -28,6 +28,9 @@ char* customSubString(unsigned short start, unsigned short end, char* inputStrin
     char stringHolder[40];
     char* pLine = &stringHolder[0];
 
+    // calculates the new end point
+    end -= start;
+
     // Moves the input string to the 'start' location
     for(unsigned short i = 0; i < start; i++){
         inputString++;
