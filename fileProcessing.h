@@ -7,6 +7,7 @@
 
 #include <stdio.h>
 #include <stdbool.h>
+#include "symbolTable.h"
 
 /**
  * Processes the text segment of the object file
@@ -17,7 +18,7 @@ void parseTextSegment(FILE* inputFile, FILE* outputFile);
 /**
 * Processes the data segment of the object file
 */
-void parseDataSegment(FILE* inputFile);
+SymbolTable* parseDataSegment(FILE* inputFile);
 
 /***
  * Accepts a string and prints to the output file

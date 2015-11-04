@@ -47,7 +47,7 @@ int main(int argc , char* argv[]){
     FILE* outputFile = fopen(outputFileName, "w+");
 
     // Handles the output segment
-    parseDataSegment(inputFile);
+    SymbolTable* symbolTable = parseDataSegment(inputFile);
 
     // resets the file pointer
     rewind(inputFile);
@@ -56,7 +56,7 @@ int main(int argc , char* argv[]){
     parseTextSegment(inputFile , outputFile);
 
     // prints the symbol table
-    printSymbolTable(outputFile);
+    printSymbolTable(outputFile, symbolTable);
 
     // Close all opened files
     fclose(inputFile);

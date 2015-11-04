@@ -18,23 +18,35 @@ struct _Symbol{
 typedef struct _Symbol Symbol;
 
 
+struct _SymbolTable{
+    int size;
+    Symbol* table;
+};
+
+typedef struct _SymbolTable SymbolTable;
+
 /***
- * Creates a valid SymbolData
+ * Creates a valid Symbol
  */
 void symbolInit(Symbol* symbol);
 
 /***
+ * Creates a Valid Symbol Table
+ */
+void symbolTableInit(SymbolTable* symbolTable);
+
+/***
  * Inserts a value to the table
  */
-void insertValueToTable(char* value, char* address);
+void insertValueToTable(char* value, char* address, SymbolTable* symbolTable);
 
 /***
  * Returns the symbol struct associated with the address
  */
-Symbol* getSymbolByAddress(char* address);
+Symbol* getSymbolByAddress(char* address, SymbolTable* symbolTable);
 
 /***
  * Prints the symbol table
  */
-void printSymbolTable(FILE* outputFile);
+void printSymbolTable(FILE* outputFile, SymbolTable* symbolTable);
 #endif //DISASSEMBLER_SYMBOLTABLE_H

@@ -11,9 +11,9 @@
 
 static int sizeOfSymbolArray = 0;
 
-static Symbol symbolArray[30] = {
-
-};
+//static Symbol symbolArray[30] = {
+//
+//};
 
 
 
@@ -39,15 +39,26 @@ void symbolInit(Symbol* symbol){
 
 }
 
+
+void symbolTableInit(SymbolTable* symbolTable){
+
+    Symbol symbolArray[50];
+    symbolTable->table = &symbolArray[0];
+    symbolTable->size = 0;
+}
+
 /***
  * Inserts a value to the table
  */
-void insertValueToTable(char* value, char* address){
+void insertValueToTable(char* value, char* address, SymbolTable* symbolTable){
 
     Symbol newTable;
     symbolInit(&newTable);
 
-    sizeOfSymbolArray++;
+    // increment to the next empty value
+    for(int i = 0; i < symbolTable->size; i++){
+        symbolTable->table++;
+    }
 
     // handles the naming
     char* tempNameArray = (char *)calloc(100, sizeof(char *));
@@ -67,28 +78,31 @@ void insertValueToTable(char* value, char* address){
 
     free(tempNameArray);
 
-    symbolArray[sizeOfSymbolArray] = newTable;
+    symbolTable->table = &newTable;
+
+    symbolTable->size++;
 
 }
 
 
-Symbol* getSymbolByAddress(char* address){
+Symbol* getSymbolByAddress(char* address, SymbolTable* symbolTable){
 
     // Iterates over the entire symbol array
-    for(int i = 0; i <= sizeOfSymbolArray; i++){
+    for(int i = 0; i <= symbolTable->size; i++){
 
         // will only be true if the addresses are equal
-        if(strcmp(symbolArray[i].address, address) == 0){
+        if(strcmp(symbolTable->table->address, address) == 0){
 
-            return &symbolArray[i];
+            return *&symbolTable->table;
         }
+        symbolTable->table++;
     }
 
     return NULL;
 }
 
 
-void printSymbolTable(FILE* outputFile){
+void printSymbolTable(FILE* outputFile, SymbolTable* symbolTable){
 
     char line[MAX_LINE_SIZE];
     char* pLine = line;
@@ -98,9 +112,9 @@ void printSymbolTable(FILE* outputFile){
     printToOutputFile(false, ".data\n", outputFile);
 
     // Iterates over the entire symbolArray
-    for(unsigned int i = 0; i <= sizeOfSymbolArray; i++){
+    for(unsigned int i = 0; i < symbolTable->size; i++){
 
-        symbolAtIndex = symbolArray[i];
+        symbolAtIndex = *symbolTable->table;
 
         // builds and prints each line of the '.data' section
         strcat(pLine, symbolAtIndex.name);
@@ -110,6 +124,8 @@ void printSymbolTable(FILE* outputFile){
         strcat(pLine, symbolAtIndex.value);
         strcat(pLine, "\n");
         printToOutputFile(false, pLine, outputFile);
+
+        symbolTable->table++;
     }
 
 }

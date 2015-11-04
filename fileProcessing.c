@@ -9,7 +9,6 @@
 #include "miscFunctions.h"
 #include "opCodeData.h"
 #include "registerData.h"
-#include "symbolTable.h"
 
 
 #define MAX_LINE_SIZE 150
@@ -45,6 +44,7 @@ void parseTextSegment(FILE* inputFile, FILE* outputFile){
     RegisterData* rtStruct;
     RegisterData* rdStruct;
     Symbol* symbolValue;
+    SymbolTable* symbolTable;
 
     // prints the '.text' section
     printToOutputFile(false, ".text", outputFile);
@@ -156,7 +156,7 @@ void parseTextSegment(FILE* inputFile, FILE* outputFile){
                 // Gets the address that the 16-bit immediate references
                 char* tempAddress = convertBinToDecString(sixteenImmediate);
 
-                symbolValue = getSymbolByAddress(tempAddress);
+                symbolValue = getSymbolByAddress(tempAddress, symbolTable);
 
                 strcat(printedString, opCodeStruct->name);
                 strcat(printedString, "\t");
@@ -191,7 +191,7 @@ void parseTextSegment(FILE* inputFile, FILE* outputFile){
                 sprintf(addressString, "%d", newAddress);
 
                 // Gets the address of the instruction
-                symbolValue = getSymbolByAddress(addressString);
+                symbolValue = getSymbolByAddress(addressString, symbolTable);
 
                 strcat(printedString, opCodeStruct->name);
                 strcat(printedString, "\t");
@@ -222,7 +222,7 @@ void parseTextSegment(FILE* inputFile, FILE* outputFile){
 }
 
 
-void parseDataSegment(FILE* inputFile){
+SymbolTable* parseDataSegment(FILE* inputFile){
 
     char line[MAX_LINE_SIZE];
     char* pLine = &line[0];
@@ -232,6 +232,8 @@ void parseDataSegment(FILE* inputFile){
     char nameArray[50];
     char* tempNameArray = &nameArray[50];
     char* lineValue;
+    SymbolTable symbolTable;
+    symbolTableInit(&symbolTable);
 
     fgets(line, MAX_LINE_SIZE, inputFile);
     memset(tempNameArray, '\0', sizeof(tempNameArray));
@@ -262,12 +264,15 @@ void parseDataSegment(FILE* inputFile){
         sprintf(tempNameArray, "%d", currentAddress);
 
         // inserts the value to the symbol table
-        insertValueToTable(lineValue, tempNameArray);
+        insertValueToTable(lineValue, tempNameArray, &symbolTable);
 
         currentAddress += 4;
         memset(tempNameArray, '\0', sizeof(tempNameArray));
     }
 
+    SymbolTable* symbolPointer = &symbolTable;
+
+    return symbolPointer;
 }
 
 
