@@ -61,6 +61,8 @@ int main(int argc , char* argv[]){
     // Close all opened files
     fclose(inputFile);
     fclose(outputFile);
+    
+    freeSymbolTable(symbolTable);
 
     return 1;
 }

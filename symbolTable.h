@@ -49,4 +49,9 @@ Symbol* getSymbolByAddress(char* address, SymbolTable* symbolTable);
  * Prints the symbol table
  */
 void printSymbolTable(FILE* outputFile, SymbolTable* symbolTable);
+
+/***
+ * Frees the values of the Symbol table
+ */
+void freeSymbolTable(SymbolTable* symbolTable);
 #endif //DISASSEMBLER_SYMBOLTABLE_H

@@ -9,41 +9,34 @@
 
 #define MAX_LINE_SIZE 150
 
-static int sizeOfSymbolArray = 0;
-
-//static Symbol symbolArray[30] = {
-//
-//};
-
-
 
 /***
  * Creates a valid SymbolData
  */
 void symbolInit(Symbol* symbol){
 
-    char nameArray[50];
-    char typeArray[50];
-    char valueArray[50];
-    char addressArray[50];
+//    char nameArray[50];
+//    char typeArray[50];
+//    char valueArray[50];
+//    char addressArray[50];
+//
+//    memset(nameArray, '\0', sizeof(nameArray));
+//    memset(typeArray, '\0', sizeof(typeArray));
+//    memset(valueArray, '\0', sizeof(valueArray));
+//    memset(addressArray, '\0', sizeof(addressArray));
 
-    memset(nameArray, '\0', sizeof(nameArray));
-    memset(typeArray, '\0', sizeof(typeArray));
-    memset(valueArray, '\0', sizeof(valueArray));
-    memset(addressArray, '\0', sizeof(addressArray));
-
-    symbol->name = &nameArray[0];
-    symbol->type = &typeArray[0];
-    symbol->value = &valueArray[0];
-    symbol->address = &addressArray[0];
+    symbol->name = (char *)calloc(100, sizeof(char *));
+    symbol->type = (char *)calloc(100, sizeof(char *));
+    symbol->value = (char *)calloc(100, sizeof(char *));
+    symbol->address = (char *)calloc(100, sizeof(char *));
 
 }
 
 
 void symbolTableInit(SymbolTable* symbolTable){
 
-    Symbol symbolArray[50];
-    symbolTable->table = &symbolArray[0];
+//    Symbol symbolArray[50];
+    symbolTable->table = (Symbol *)malloc(100 * sizeof(Symbol *));
     symbolTable->size = 0;
 }
 
@@ -63,7 +56,7 @@ void insertValueToTable(char* value, char* address, SymbolTable* symbolTable){
     // handles the naming
     char* tempNameArray = (char *)calloc(100, sizeof(char *));
     strcpy(newTable.name, "V0");
-    sprintf(tempNameArray, "%d", sizeOfSymbolArray);
+    sprintf(tempNameArray, "%d", symbolTable->size);
     strcat(newTable.name, tempNameArray);
     strcat(newTable.name, ":");
 
@@ -128,4 +121,27 @@ void printSymbolTable(FILE* outputFile, SymbolTable* symbolTable){
         symbolTable->table++;
     }
 
+}
+
+
+void freeSymbolTable(SymbolTable* symbolTable){
+
+    Symbol* symbol;
+    // iterates over the entire array deallocating values
+    for(int i = 0; i < symbolTable->size; i++){
+
+        symbol = *&symbolTable->table;
+        free(symbol->address);
+        free(symbol->name);
+        free(symbol->type);
+        free(symbol->value);
+        symbolTable->table++;
+    }
+
+    // Goes back to the beginning
+    for(int i = 0; i < symbolTable->size; i++){
+        symbolTable->table--;
+    }
+
+    free(symbolTable->table);
 }
