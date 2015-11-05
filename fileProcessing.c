@@ -146,12 +146,12 @@ void parseTextSegment(FILE* inputFile, FILE* outputFile, SymbolTable* symbolTabl
             if(strcmp(opCodeStruct->name, "addi") == 0){
 
                 // Gets the 'rs' register data
-                rs = customSubString(6 , 12, pLine);
+                rs = customSubString(6 , 11, pLine);
                 FindRegisterDataByBits(rs, rsStruct);
                 free(rs);
 
                 // Gets the 'rt' register data
-                rt = customSubString(12 , 16, pLine);
+                rt = customSubString(11 , 16, pLine);
                 FindRegisterDataByBits(rt, rtStruct);
                 free(rt);
 
@@ -163,9 +163,9 @@ void parseTextSegment(FILE* inputFile, FILE* outputFile, SymbolTable* symbolTabl
                 // builds the print string
                 strcat(printedString, opCodeStruct->name);
                 strcat(printedString, "   ");
-                strcat(printedString, rsStruct->registerName);
-                strcat(printedString, ", ");
                 strcat(printedString, rtStruct->registerName);
+                strcat(printedString, ", ");
+                strcat(printedString, rsStruct->registerName);
                 strcat(printedString, ", ");
                 strcat(printedString, sixteenBitString);
                 strcat(printedString, "\n");

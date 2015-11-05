@@ -137,6 +137,10 @@ void printSymbolTable(FILE* outputFile, SymbolTable* symbolTable){
         strcat(pLine, ":      ");
         strcat(pLine, symbolAtIndex.type);
         strcat(pLine, " ");
+        // add an extra space just for zero values
+        if(strcmp(symbolAtIndex.value, "0") == 0){
+            strcat(pLine, " ");
+        }
         strcat(pLine, symbolAtIndex.value);
         strcat(pLine, "\n");
         printToOutputFile(false, pLine, outputFile);
