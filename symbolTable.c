@@ -50,34 +50,39 @@ void symbolTableInit(SymbolTable* symbolTable){
  */
 void insertValueToTable(char* value, char* address, SymbolTable* symbolTable){
 
-    Symbol newSymbol;
-    symbolInit(&newSymbol);
+//    Symbol newSymbol;
+//    symbolInit(symbolTable->table);
 
     // increment to the next empty value
     for(int i = 0; i < symbolTable->size; i++){
         symbolTable->table++;
     }
 
+
+    symbolTable->table->address = (char *)calloc(100, sizeof(char *));
+    symbolTable->table->value = (char *)calloc(100, sizeof(char *));
+    symbolTable->table->type = (char *)calloc(100, sizeof(char *));
+    symbolTable->table->name = (char *)calloc(100, sizeof(char *));
+
     // handles the naming
     char* tempNameArray = (char *)calloc(100, sizeof(char *));
     symbolTable->size++;
-    strcpy(newSymbol.name, "V0");
+    strcpy(symbolTable->table->name, "V0");
     sprintf(tempNameArray, "%d", symbolTable->size);
-    strcat(newSymbol.name, tempNameArray);
-    strcat(newSymbol.name, ":");
+    strcat(symbolTable->table->name, tempNameArray);
 
     // copies over the type
-    strcpy(newSymbol.type, ".word");
+    strcpy(symbolTable->table->type, ".word");
 
     // copies over the value
-    strcpy(newSymbol.value, value);
+    strcpy(symbolTable->table->value, value);
 
     // copies over the address
-    strcpy(newSymbol.address, address);
-    copySymbolToTable(&newSymbol, symbolTable);
+    strcpy(symbolTable->table->address, address);
+//    copySymbolToTable(&newSymbol, symbolTable);
 
     free(tempNameArray);
-    symbolFree(&newSymbol);
+//    symbolFree(&newSymbol);
 
 }
 
@@ -120,8 +125,8 @@ void symbolCopy(Symbol* destSymbol, Symbol* copySymbol){
 
 void printSymbolTable(FILE* outputFile, SymbolTable* symbolTable){
 
-    char line[MAX_LINE_SIZE];
-    char* pLine = line;
+//    char line[MAX_LINE_SIZE];
+    char* pLine = (char *)calloc(100, sizeof(char *));
     Symbol symbolAtIndex;
 
     // prints the .data text
@@ -134,15 +139,17 @@ void printSymbolTable(FILE* outputFile, SymbolTable* symbolTable){
 
         // builds and prints each line of the '.data' section
         strcat(pLine, symbolAtIndex.name);
-        strcat(pLine, "\t\t");
+        strcat(pLine, ":      ");
         strcat(pLine, symbolAtIndex.type);
         strcat(pLine, " ");
         strcat(pLine, symbolAtIndex.value);
         strcat(pLine, "\n");
         printToOutputFile(false, pLine, outputFile);
-
         symbolTable->table++;
+        memset(pLine, '\0', sizeof(pLine));
     }
+
+    free(pLine);
 
 }
 
@@ -155,8 +162,12 @@ void freeSymbolTable(SymbolTable* symbolTable){
     // iterates over the entire array deallocating values
     for(int i = 0; i < symbolTable->size; i++){
 
-        symbol = *&symbolTable->table;
-        symbolFree(symbol);
+//        symbol = *&symbolTable->table;
+        free(symbolTable->table->name);
+        free(symbolTable->table->address);
+        free(symbolTable->table->type);
+        free(symbolTable->table->value);
+//        symbolFree(symbol);
         symbolTable->table++;
     }
 

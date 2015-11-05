@@ -57,6 +57,9 @@ int main(int argc , char* argv[]){
     // Handles the text segment
     parseTextSegment(inputFile , outputFile, &symbolTable);
 
+    rewind(inputFile);
+    rewind(outputFile);
+
     // Close all opened files
     fclose(inputFile);
     fclose(outputFile);

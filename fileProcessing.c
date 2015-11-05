@@ -4,6 +4,7 @@
 
 #include <stdlib.h>
 #include <string.h>
+#include <stdio.h>
 
 #include "fileProcessing.h"
 #include "miscFunctions.h"
@@ -35,7 +36,7 @@ void parseTextSegment(FILE* inputFile, FILE* outputFile, SymbolTable* symbolTabl
     char* sixteenImmediate;
     char* twoSixImmediate;
     char printedStringArray[40];
-    char* printedString = &printedStringArray[0];
+    char* printedString = (char *)calloc(100, sizeof(char *));
     char* syscall = "00000000000000000000000000001100\n";
 
     // declare structs that will be pointed to
@@ -260,7 +261,7 @@ void parseTextSegment(FILE* inputFile, FILE* outputFile, SymbolTable* symbolTabl
 
         // clear the arrays of previous data
         memset(line, '\0', sizeof(line));
-        memset(printedStringArray, '\0', sizeof(printedStringArray));
+        memset(printedString, '\0', sizeof(printedString));
 
         fgets(line, MAX_LINE_SIZE, inputFile);
         resetOpCode(opCodeStruct);
@@ -268,16 +269,18 @@ void parseTextSegment(FILE* inputFile, FILE* outputFile, SymbolTable* symbolTabl
 
 
     symbolTable->table = *&beginningSymbol;
-
     // free all the structs
     freeOpCodeData(opCodeStruct);
     freeOpCodeData(functStruct);
     freeRegisterDataStruct(rsStruct);
     freeRegisterDataStruct(rtStruct);
     freeRegisterDataStruct(rdStruct);
+    symbolFree(symbolValue);
+    free(printedString);
 
     // prints the symbol table
-//    printSymbolTable(outputFile, symbolTable);
+    printSymbolTable(outputFile, symbolTable);
+    symbolTable->table = *&beginningSymbol;
 
     freeSymbolTable(symbolTable);
 
