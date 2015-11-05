@@ -17,7 +17,7 @@ typedef struct _opCodeData OpCodeData;
 /***
  * Returns the opCodeData struct that corresponds to the given bits
  */
-OpCodeData* FindOpCodeByBits(char* bits);
+void FindOpCodeByBits(char* bits, OpCodeData* opCodeData);
 
 /**
  * Creates valid OpCodeData struct

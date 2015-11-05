@@ -63,7 +63,7 @@ void symbolFree(Symbol* symbol);
 /***
  * Returns the symbol struct associated with the address
  */
-Symbol* getSymbolByAddress(char* address, SymbolTable* symbolTable);
+void getSymbolByAddress(char* address, SymbolTable* symbolTable, Symbol* symbol);
 
 /***
  * Prints the symbol table

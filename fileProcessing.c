@@ -37,13 +37,21 @@ void parseTextSegment(FILE* inputFile, FILE* outputFile, SymbolTable* symbolTabl
     char printedStringArray[40];
     char* printedString = &printedStringArray[0];
 
+    // declare structs that will be pointed to
+    OpCodeData opCodeData;
+    OpCodeData functData;
+    RegisterData rsData;
+    RegisterData rtData;
+    RegisterData rdData;
+    Symbol symbolData;
+
     // sturcts that will be used to hold to the register information
-    OpCodeData* opCodeStruct;
-    OpCodeData* functStruct;
-    RegisterData* rsStruct;
-    RegisterData* rtStruct;
-    RegisterData* rdStruct;
-    Symbol* symbolValue;
+    OpCodeData* opCodeStruct = &opCodeData;
+    OpCodeData* functStruct = &functData;
+    RegisterData* rsStruct = &rsData;
+    RegisterData* rtStruct = &rtData;
+    RegisterData* rdStruct = &rdData;
+    Symbol* symbolValue = &symbolData;
     SymbolTable* beginningTable = &*symbolTable;
 
     // allocate the values
@@ -52,6 +60,7 @@ void parseTextSegment(FILE* inputFile, FILE* outputFile, SymbolTable* symbolTabl
     registerDataInit(rsStruct);
     registerDataInit(rtStruct);
     registerDataInit(rdStruct);
+    symbolInit(symbolValue);
 
     // prints the '.text' section
     printToOutputFile(false, ".text", outputFile);
@@ -69,14 +78,14 @@ void parseTextSegment(FILE* inputFile, FILE* outputFile, SymbolTable* symbolTabl
         }
 
         opCode = customSubString(0 , 6 , pLine);
-        opCodeStruct = FindOpCodeByBits(opCode);
+        FindOpCodeByBits(opCode,  opCodeStruct);
         free(opCode);
 
         // R-type instruction
         if(opCodeStruct->formatType == RTYPE){
 
             funct = customSubString(26 , 31, pLine);
-            functStruct = FindOpCodeByBits(funct);
+            FindOpCodeByBits(funct, functStruct);
             free(funct);
 
             // checks to see if the command is syscall
@@ -181,7 +190,7 @@ void parseTextSegment(FILE* inputFile, FILE* outputFile, SymbolTable* symbolTabl
                 char* tempAddress = convertBinToDecString(sixteenImmediate, false);
                 free(sixteenImmediate);
 
-                symbolValue = getSymbolByAddress(tempAddress, symbolTable);
+                getSymbolByAddress(tempAddress, symbolTable, symbolValue);
 
                 strcat(printedString, opCodeStruct->name);
                 strcat(printedString, "\t");
@@ -225,7 +234,7 @@ void parseTextSegment(FILE* inputFile, FILE* outputFile, SymbolTable* symbolTabl
                 free(sixteenImmediate);
 
                 // Gets the address of the instruction
-                symbolValue = getSymbolByAddress(addressString, symbolTable);
+                getSymbolByAddress(addressString, symbolTable, symbolValue);
 
                 strcat(printedString, opCodeStruct->name);
                 strcat(printedString, "\t");

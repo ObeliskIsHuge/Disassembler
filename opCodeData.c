@@ -43,31 +43,23 @@ void opCodeInit(OpCodeData* opCodeData){
 }
 
 
-OpCodeData* FindOpCodeByBits(char* bits){
+void FindOpCodeByBits(char* bits, OpCodeData* opCodeData){
 
     for(unsigned int i = 0; i < OPCODETABLESIZE; i++){
 
         if(strcmp(opCodeTable[i].bits, bits) == 0){
 
             OpCodeData foundOpCode = opCodeTable[i];
-            OpCodeData returnOpCode;
-            opCodeInit(&returnOpCode);
 
             // copies over the data
-            strcpy(returnOpCode.bits, foundOpCode.bits);
-            strcpy(returnOpCode.name, foundOpCode.name);
+            strcpy(opCodeData->bits, foundOpCode.bits);
+            strcpy(opCodeData->name, foundOpCode.name);
 
             // copies over the format type
-            returnOpCode.formatType = foundOpCode.formatType;
-
-            OpCodeData* returnPointer = &returnOpCode;
-
-            return returnPointer;
+            opCodeData->formatType = foundOpCode.formatType;
+            break;
         }
     }
-
-    return NULL;
-
 }
 
 

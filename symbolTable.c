@@ -92,23 +92,19 @@ void copySymbolToTable(Symbol* symbol, SymbolTable* symbolTable){
 }
 
 
-Symbol* getSymbolByAddress(char* address, SymbolTable* symbolTable){
+void getSymbolByAddress(char* address, SymbolTable* symbolTable, Symbol* symbol){
 
     // Iterates over the entire symbol array
     for(int i = 0; i <= symbolTable->size; i++){
 
         // will only be true if the addresses are equal
         if(strcmp(symbolTable->table->address, address) == 0){
-//            Symbol symbol;
-//            symbolInit(&symbol);
-//            symbolCopy(&symbol, symbolTable->table);
 
-            return *&symbolTable->table;
+            symbolCopy(symbol, symbolTable->table);
+            break;
         }
         symbolTable->table++;
     }
-
-    return NULL;
 }
 
 
