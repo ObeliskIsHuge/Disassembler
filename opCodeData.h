@@ -20,6 +20,11 @@ typedef struct _opCodeData OpCodeData;
 OpCodeData* FindOpCodeByBits(char* bits);
 
 /**
+ * Creates valid OpCodeData struct
+ */
+void opCodeInit(OpCodeData* opCodeData);
+
+/**
  * Frees the dynamic values in an opCodeData struct
  */
 void freeOpCodeData(OpCodeData* opCode);

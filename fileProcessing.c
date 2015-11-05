@@ -63,33 +63,37 @@ void parseTextSegment(FILE* inputFile, FILE* outputFile, SymbolTable* symbolTabl
 
         opCode = customSubString(0 , 6 , pLine);
         opCodeStruct = FindOpCodeByBits(opCode);
+        free(opCode);
 
         // R-type instruction
         if(opCodeStruct->formatType == RTYPE){
 
             funct = customSubString(26 , 31, pLine);
             functStruct = FindOpCodeByBits(funct);
+            free(funct);
 
             // checks to see if the command is syscall
             if(strcmp(functStruct->name, "syscall") == 0){
 
                 strcpy(printedString, "syscall\n");
                 printedStringArray[32] = '\n';
-
                 printToOutputFile(true, printedString, outputFile);
                 // isn't syscall
             } else {
                 // handles rs info
                 rs = customSubString(6 , 10, pLine);
                 rsStruct = FindRegisterDataByBits(rs);
+                free(rs);
 
                 // handles rt info
                 rt = customSubString(10 , 15, pLine);
                 rtStruct = FindRegisterDataByBits(rt);
+                free(rt);
 
                 // handles rd info
                 rd = customSubString(15 , 20, pLine);
                 rdStruct = FindRegisterDataByBits(rd);
+                free(rd);
 
                 //TODO what to do here?
                 shamt = customSubString(20 , 25, pLine);
@@ -110,6 +114,8 @@ void parseTextSegment(FILE* inputFile, FILE* outputFile, SymbolTable* symbolTabl
                 freeRegisterDataStruct(rtStruct);
                 freeRegisterDataStruct(rdStruct);
             }
+
+            freeOpCodeData(functStruct);
             // I-type instruction
         } else if (opCodeStruct->formatType == ITYPE){
 
@@ -119,14 +125,17 @@ void parseTextSegment(FILE* inputFile, FILE* outputFile, SymbolTable* symbolTabl
                 // Gets the 'rs' register data
                 rs = customSubString(6 , 12, pLine);
                 rsStruct = FindRegisterDataByBits(rs);
+                free(rs);
 
                 // Gets the 'rt' register data
                 rt = customSubString(12 , 16, pLine);
                 rtStruct = FindRegisterDataByBits(rt);
+                free(rt);
 
                 // converts the immediate and gets it to a printable format
                 sixteenImmediate = customSubString(16 , 32, pLine);
                 char* sixteenBitString = convertBinToDecString(sixteenImmediate, false);
+                free(sixteenImmediate);
 
                 // builds the print string
                 strcat(printedString, opCodeStruct->name);
@@ -151,15 +160,18 @@ void parseTextSegment(FILE* inputFile, FILE* outputFile, SymbolTable* symbolTabl
                 // Gets the 'rs' register data
                 rs = customSubString(6 , 11, pLine);
                 rsStruct = FindRegisterDataByBits(rs);
+                free(rs);
 
                 // Gets the 'rt' register data
                 rt = customSubString(11 , 16, pLine);
                 rtStruct = FindRegisterDataByBits(rt);
+                free(rt);
 
                 sixteenImmediate = customSubString(16, 32, pLine);
 
                 // Gets the address that the 16-bit immediate references
                 char* tempAddress = convertBinToDecString(sixteenImmediate, false);
+                free(sixteenImmediate);
 
                 symbolValue = getSymbolByAddress(tempAddress, symbolTable);
 
@@ -189,16 +201,19 @@ void parseTextSegment(FILE* inputFile, FILE* outputFile, SymbolTable* symbolTabl
                 // reads the 'base' value
                 basePointer = customSubString(6 , 11, pLine);
                 base = stringBinaryToInt(basePointer, false);
+                free(basePointer);
 
                 // reads the 'rt' Value
                 rt = customSubString(11 , 16, pLine);
                 rtStruct = FindRegisterDataByBits(rt);
+                free(rt);
 
                 // converts 16-bit and does the math to find the address
                 sixteenImmediate = customSubString(16, 32, pLine);
                 newAddress = stringBinaryToInt(sixteenImmediate, false) + base;
                 char* addressString = (char *)calloc(100, sizeof(char *));
                 sprintf(addressString, "%d", newAddress);
+                free(sixteenImmediate);
 
                 // Gets the address of the instruction
                 symbolValue = getSymbolByAddress(addressString, symbolTable);
@@ -214,13 +229,13 @@ void parseTextSegment(FILE* inputFile, FILE* outputFile, SymbolTable* symbolTabl
                 symbolTable = &*beginningTable;
                 free(addressString);
                 freeRegisterDataStruct(rtStruct);
-//                symbolFree(symbolValue);
             }
 
             // J-type instruction
         } else {
-
+            //TODO
             twoSixImmediate = customSubString(6 , 32, pLine);
+            free(twoSixImmediate);
 
         }
 
@@ -229,6 +244,7 @@ void parseTextSegment(FILE* inputFile, FILE* outputFile, SymbolTable* symbolTabl
         memset(printedStringArray, '\0', sizeof(printedStringArray));
 
         fgets(line, MAX_LINE_SIZE, inputFile);
+        freeOpCodeData(opCodeStruct);
     }
 
 }

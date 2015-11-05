@@ -30,8 +30,8 @@ int stringBinaryToInt(char* string, bool halfValue){
 
 char* customSubString(unsigned short start, unsigned short end, char* inputString){
 
-    char stringHolder[40];
-    char* pLine = &stringHolder[0];
+
+    char* pLine = (char *)calloc(100, sizeof(char *));
 
     // calculates the new end point
     end -= start;
@@ -41,25 +41,26 @@ char* customSubString(unsigned short start, unsigned short end, char* inputStrin
         inputString++;
     }
 
+    // stores how far the pointer is away from the beginning
+    int resetPointer = 0;
     // copies over the values from the input string to the new string
     for(unsigned short i = 0; i < end; i++){
         *pLine = *inputString;
         pLine++;
         inputString++;
+        resetPointer++;
     }
 
-    // add line terminator
-    *pLine = '\0';
-
-    // reset pointer
-    pLine = &stringHolder[0];
+    // goes back to the beginning of the array
+    for(unsigned short i = 0; i < resetPointer; i++){
+        pLine--;
+    }
 
     return pLine;
 }
 
 char* convertBinToDecString(char* binaryString, bool halfValue){
 
-//    char storageString[50];
     char* stringPointer = (char *)calloc(100, sizeof(char *));
     int immediate;
 

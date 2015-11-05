@@ -35,6 +35,13 @@ static OpCodeData opCodeTable[OPCODETABLESIZE] = {
 };
 
 
+void opCodeInit(OpCodeData* opCodeData){
+
+    opCodeData->name = (char *)calloc(100, sizeof(char *));
+    opCodeData->bits = (char *)calloc(100, sizeof(char *));
+    opCodeData->formatType = -1;
+}
+
 
 OpCodeData* FindOpCodeByBits(char* bits){
 
@@ -44,14 +51,7 @@ OpCodeData* FindOpCodeByBits(char* bits){
 
             OpCodeData foundOpCode = opCodeTable[i];
             OpCodeData returnOpCode;
-
-            // arrays will hold the used data
-            char registerBits[OPCODEFIELDSIZE];
-            char registerName[OPCODENAMESIZE];
-
-            // points to the used data
-            returnOpCode.bits = &registerBits[0];
-            returnOpCode.name = &registerName[0];
+            opCodeInit(&returnOpCode);
 
             // copies over the data
             strcpy(returnOpCode.bits, foundOpCode.bits);
