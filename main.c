@@ -57,14 +57,11 @@ int main(int argc , char* argv[]){
     // Handles the text segment
     parseTextSegment(inputFile , outputFile, &symbolTable);
 
-    // prints the symbol table
-    printSymbolTable(outputFile, &symbolTable);
-
     // Close all opened files
     fclose(inputFile);
     fclose(outputFile);
 
-    freeSymbolTable(&symbolTable);
+//    freeSymbolTable(&symbolTable);
 
     return 1;
 }

@@ -36,6 +36,7 @@ void parseTextSegment(FILE* inputFile, FILE* outputFile, SymbolTable* symbolTabl
     char* twoSixImmediate;
     char printedStringArray[40];
     char* printedString = &printedStringArray[0];
+    char* syscall = "00000000000000000000000000001100\n";
 
     // declare structs that will be pointed to
     OpCodeData opCodeData;
@@ -52,7 +53,7 @@ void parseTextSegment(FILE* inputFile, FILE* outputFile, SymbolTable* symbolTabl
     RegisterData* rtStruct = &rtData;
     RegisterData* rdStruct = &rdData;
     Symbol* symbolValue = &symbolData;
-    SymbolTable* beginningTable = &*symbolTable;
+    Symbol* beginningSymbol = *&symbolTable->table;
 
     // allocate the values
     opCodeInit(opCodeStruct);
@@ -63,8 +64,8 @@ void parseTextSegment(FILE* inputFile, FILE* outputFile, SymbolTable* symbolTabl
     symbolInit(symbolValue);
 
     // prints the '.text' section
-    printToOutputFile(false, ".text", outputFile);
-    printToOutputFile(false, "main:\t", outputFile);
+    printToOutputFile(false, ".text\n", outputFile);
+    printToOutputFile(false, "main:   ", outputFile);
 
     fgets(line, MAX_LINE_SIZE, inputFile);
 
@@ -84,35 +85,34 @@ void parseTextSegment(FILE* inputFile, FILE* outputFile, SymbolTable* symbolTabl
         // R-type instruction
         if(opCodeStruct->formatType == RTYPE){
 
-            funct = customSubString(26 , 31, pLine);
+            funct = customSubString(26 , 32, pLine);
             FindOpCodeByBits(funct, functStruct);
             free(funct);
 
             // checks to see if the command is syscall
-            if(strcmp(functStruct->name, "syscall") == 0){
+            if(strcmp(pLine, syscall) == 0){
 
                 strcpy(printedString, "syscall\n");
-                printedStringArray[32] = '\n';
                 printToOutputFile(true, printedString, outputFile);
                 // isn't syscall
             } else {
                 // handles rs info
-                rs = customSubString(6 , 10, pLine);
+                rs = customSubString(6 , 11, pLine);
                 FindRegisterDataByBits(rs, rsStruct);
                 free(rs);
 
                 // handles rt info
-                rt = customSubString(10 , 15, pLine);
+                rt = customSubString(11 , 16, pLine);
                 FindRegisterDataByBits(rt, rtStruct);
                 free(rt);
 
                 // handles rd info
-                rd = customSubString(15 , 20, pLine);
-                FindRegisterDataByBits(rd, rtStruct);
+                rd = customSubString(16 , 21, pLine);
+                FindRegisterDataByBits(rd, rdStruct);
                 free(rd);
 
                 //TODO what to do here?
-                shamt = customSubString(20 , 25, pLine);
+                shamt = customSubString(21 , 26, pLine);
                 free(shamt);
 
                 // Builds the string that will be printed
@@ -244,7 +244,7 @@ void parseTextSegment(FILE* inputFile, FILE* outputFile, SymbolTable* symbolTabl
                 strcat(printedString, "\n");
 
                 printToOutputFile(false, printedString, outputFile);
-                symbolTable = &*beginningTable;
+                symbolTable->table = *&beginningSymbol;
                 free(addressString);
                 symbolReset(symbolValue);
                 resetRegisterData(rtStruct);
@@ -266,12 +266,20 @@ void parseTextSegment(FILE* inputFile, FILE* outputFile, SymbolTable* symbolTabl
         resetOpCode(opCodeStruct);
     }
 
+
+    symbolTable->table = *&beginningSymbol;
+
     // free all the structs
     freeOpCodeData(opCodeStruct);
     freeOpCodeData(functStruct);
     freeRegisterDataStruct(rsStruct);
     freeRegisterDataStruct(rtStruct);
     freeRegisterDataStruct(rdStruct);
+
+    // prints the symbol table
+//    printSymbolTable(outputFile, symbolTable);
+
+    freeSymbolTable(symbolTable);
 
 }
 

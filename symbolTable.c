@@ -31,6 +31,7 @@ void symbolFree(Symbol* symbol){
 }
 
 void symbolReset(Symbol* symbol){
+
     memset(symbol->name, 0 , sizeof(symbol->name));
     memset(symbol->type, 0 , sizeof(symbol->type));
     memset(symbol->value, 0 , sizeof(symbol->value));
@@ -148,7 +149,9 @@ void printSymbolTable(FILE* outputFile, SymbolTable* symbolTable){
 
 void freeSymbolTable(SymbolTable* symbolTable){
 
+    //TODO this might not deallocating correctly
     Symbol* symbol;
+    Symbol* beginningSymbol = *&symbolTable->table;
     // iterates over the entire array deallocating values
     for(int i = 0; i < symbolTable->size; i++){
 
@@ -157,10 +160,6 @@ void freeSymbolTable(SymbolTable* symbolTable){
         symbolTable->table++;
     }
 
-    // Goes back to the beginning
-    for(int i = 0; i < symbolTable->size; i++){
-        symbolTable->table--;
-    }
-
+    symbolTable->table = *&beginningSymbol;
     free(symbolTable->table);
 }
