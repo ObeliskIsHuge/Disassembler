@@ -5,6 +5,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
+#include <stdbool.h>
 
 #include "fileProcessing.h"
 #include "miscFunctions.h"
@@ -68,6 +69,8 @@ void parseTextSegment(FILE* inputFile, FILE* outputFile, SymbolTable* symbolTabl
     printToOutputFile(false, ".text\n", outputFile);
     printToOutputFile(false, "main:   ", outputFile);
 
+    bool space = false;
+
     fgets(line, MAX_LINE_SIZE, inputFile);
 
     // Keeps running until the new line is found
@@ -94,7 +97,8 @@ void parseTextSegment(FILE* inputFile, FILE* outputFile, SymbolTable* symbolTabl
             if(strcmp(pLine, syscall) == 0){
 
                 strcpy(printedString, "syscall\n");
-                printToOutputFile(true, printedString, outputFile);
+                printToOutputFile(space, printedString, outputFile);
+                space = true;
                 // isn't syscall
             } else {
                 // handles rs info
@@ -127,7 +131,8 @@ void parseTextSegment(FILE* inputFile, FILE* outputFile, SymbolTable* symbolTabl
                 strcat(printedString, "\n");
 
                 // prints to output file
-                printToOutputFile(false, printedString, outputFile);
+                printToOutputFile(space, printedString, outputFile);
+                space = true;
                 resetRegisterData(rsStruct);
                 resetRegisterData(rtStruct);
                 resetRegisterData(rdStruct);
@@ -171,7 +176,8 @@ void parseTextSegment(FILE* inputFile, FILE* outputFile, SymbolTable* symbolTabl
                 resetRegisterData(rtStruct);
 
                 // prints the string
-                printToOutputFile(false, printedString, outputFile);
+                printToOutputFile(space, printedString, outputFile);
+                space = true;
                 // will be true when the instruction is 'beq'
             } else if(strcmp(opCodeStruct->name, "beq") == 0){
 
@@ -202,7 +208,8 @@ void parseTextSegment(FILE* inputFile, FILE* outputFile, SymbolTable* symbolTabl
                 strcat(printedString, symbolValue->name);
 
                 // prints to output file
-                printToOutputFile(false, printedString, outputFile);
+                printToOutputFile(space, printedString, outputFile);
+                space = true;
 
                 // frees values
                 free(tempAddress);
@@ -244,7 +251,8 @@ void parseTextSegment(FILE* inputFile, FILE* outputFile, SymbolTable* symbolTabl
                 strcat(printedString, symbolValue->name);
                 strcat(printedString, "\n");
 
-                printToOutputFile(false, printedString, outputFile);
+                printToOutputFile(space, printedString, outputFile);
+                space = true;
                 symbolTable->table = *&beginningSymbol;
                 free(addressString);
                 symbolReset(symbolValue);
@@ -268,6 +276,7 @@ void parseTextSegment(FILE* inputFile, FILE* outputFile, SymbolTable* symbolTabl
     }
 
 
+    printToOutputFile(false, "\n", outputFile);
     symbolTable->table = *&beginningSymbol;
     // free all the structs
     freeOpCodeData(opCodeStruct);
@@ -348,7 +357,7 @@ void printToOutputFile(bool includeSpace , char* outputString, FILE* outputFile)
 
     // adds space if true
     if(includeSpace){
-        strcpy(printString, "\t\t");
+        strcpy(printString, "        ");
 
     }
 

@@ -64,7 +64,5 @@ int main(int argc , char* argv[]){
     fclose(inputFile);
     fclose(outputFile);
 
-//    freeSymbolTable(&symbolTable);
-
     return 1;
 }

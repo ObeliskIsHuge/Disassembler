@@ -50,9 +50,6 @@ void symbolTableInit(SymbolTable* symbolTable){
  */
 void insertValueToTable(char* value, char* address, SymbolTable* symbolTable){
 
-//    Symbol newSymbol;
-//    symbolInit(symbolTable->table);
-
     // increment to the next empty value
     for(int i = 0; i < symbolTable->size; i++){
         symbolTable->table++;
@@ -79,10 +76,9 @@ void insertValueToTable(char* value, char* address, SymbolTable* symbolTable){
 
     // copies over the address
     strcpy(symbolTable->table->address, address);
-//    copySymbolToTable(&newSymbol, symbolTable);
 
     free(tempNameArray);
-//    symbolFree(&newSymbol);
+
 
 }
 
@@ -125,7 +121,6 @@ void symbolCopy(Symbol* destSymbol, Symbol* copySymbol){
 
 void printSymbolTable(FILE* outputFile, SymbolTable* symbolTable){
 
-//    char line[MAX_LINE_SIZE];
     char* pLine = (char *)calloc(100, sizeof(char *));
     Symbol symbolAtIndex;
 
