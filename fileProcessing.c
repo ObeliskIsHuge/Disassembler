@@ -122,7 +122,7 @@ void parseTextSegment(FILE* inputFile, FILE* outputFile, SymbolTable* symbolTabl
 
                 // Builds the string that will be printed
                 strcat(printedString, functStruct->name);
-                strcat(printedString, "\t");
+                strcat(printedString, "    ");
                 strcat(printedString, rdStruct->registerName);
                 strcat(printedString, ", ");
                 strcat(printedString, rsStruct->registerName);
@@ -162,7 +162,7 @@ void parseTextSegment(FILE* inputFile, FILE* outputFile, SymbolTable* symbolTabl
 
                 // builds the print string
                 strcat(printedString, opCodeStruct->name);
-                strcat(printedString, "\t");
+                strcat(printedString, "   ");
                 strcat(printedString, rsStruct->registerName);
                 strcat(printedString, ", ");
                 strcat(printedString, rtStruct->registerName);
@@ -245,7 +245,7 @@ void parseTextSegment(FILE* inputFile, FILE* outputFile, SymbolTable* symbolTabl
                 getSymbolByAddress(addressString, symbolTable, symbolValue);
 
                 strcat(printedString, opCodeStruct->name);
-                strcat(printedString, "\t");
+                strcat(printedString, "     ");
                 strcat(printedString, rtStruct->registerName);
                 strcat(printedString, ", ");
                 strcat(printedString, symbolValue->name);
