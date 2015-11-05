@@ -42,27 +42,29 @@ int main(int argc , char* argv[]){
     }
 
     FILE* inputFile = fopen(inputFileName , "r+");
-
     // Holds the file that will contain all the binary data
     FILE* outputFile = fopen(outputFileName, "w+");
 
+    SymbolTable symbolTable;
+    symbolTableInit(&symbolTable);
+
     // Handles the output segment
-    SymbolTable* symbolTable = parseDataSegment(inputFile);
+    parseDataSegment(inputFile, &symbolTable);
 
     // resets the file pointer
     rewind(inputFile);
 
     // Handles the text segment
-    parseTextSegment(inputFile , outputFile);
+    parseTextSegment(inputFile , outputFile, &symbolTable);
 
     // prints the symbol table
-    printSymbolTable(outputFile, symbolTable);
+    printSymbolTable(outputFile, &symbolTable);
 
     // Close all opened files
     fclose(inputFile);
     fclose(outputFile);
-    
-    freeSymbolTable(symbolTable);
+
+    freeSymbolTable(&symbolTable);
 
     return 1;
 }

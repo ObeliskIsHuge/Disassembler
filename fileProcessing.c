@@ -19,7 +19,7 @@
 #define JTYPE 2
 
 
-void parseTextSegment(FILE* inputFile, FILE* outputFile){
+void parseTextSegment(FILE* inputFile, FILE* outputFile, SymbolTable* symbolTable){
 
     char line[MAX_LINE_SIZE];
     char* pLine = line;
@@ -44,7 +44,6 @@ void parseTextSegment(FILE* inputFile, FILE* outputFile){
     RegisterData* rtStruct;
     RegisterData* rdStruct;
     Symbol* symbolValue;
-    SymbolTable* symbolTable;
 
     // prints the '.text' section
     printToOutputFile(false, ".text", outputFile);
@@ -222,7 +221,7 @@ void parseTextSegment(FILE* inputFile, FILE* outputFile){
 }
 
 
-SymbolTable* parseDataSegment(FILE* inputFile){
+void parseDataSegment(FILE* inputFile, SymbolTable* symbolTable){
 
     char line[MAX_LINE_SIZE];
     char* pLine = &line[0];
@@ -232,8 +231,6 @@ SymbolTable* parseDataSegment(FILE* inputFile){
     char nameArray[50];
     char* tempNameArray = &nameArray[50];
     char* lineValue;
-    SymbolTable symbolTable;
-    symbolTableInit(&symbolTable);
 
     fgets(line, MAX_LINE_SIZE, inputFile);
     memset(tempNameArray, '\0', sizeof(tempNameArray));
@@ -253,8 +250,8 @@ SymbolTable* parseDataSegment(FILE* inputFile){
 
         fgets(line, MAX_LINE_SIZE, inputFile);
 
-        // break the loop if we process a new line character
-        if(strcmp(pLine, "\n") == 0){
+        // break the loop if we process a new line character or a blank line
+        if(strcmp(pLine, "\n") == 0 || strcmp(pLine, "") == 0){
             break;
         }
 
@@ -264,15 +261,17 @@ SymbolTable* parseDataSegment(FILE* inputFile){
         sprintf(tempNameArray, "%d", currentAddress);
 
         // inserts the value to the symbol table
-        insertValueToTable(lineValue, tempNameArray, &symbolTable);
+        insertValueToTable(lineValue, tempNameArray, symbolTable);
+
+        // move back to the beginning
+        for(int i = 1; i < symbolTable->size; i++){
+            symbolTable->table--;
+        }
+        free(lineValue);
 
         currentAddress += 4;
         memset(tempNameArray, '\0', sizeof(tempNameArray));
     }
-
-    SymbolTable* symbolPointer = &symbolTable;
-
-    return symbolPointer;
 }
 
 

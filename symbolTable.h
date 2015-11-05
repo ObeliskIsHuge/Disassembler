@@ -41,6 +41,16 @@ void symbolTableInit(SymbolTable* symbolTable);
 void insertValueToTable(char* value, char* address, SymbolTable* symbolTable);
 
 /***
+ * Makes a deep copy of the symbol to the symbol Table
+ */
+void copySymbolToTable(Symbol* symbol, SymbolTable* symbolTable);
+
+/***
+ * Frees symbol struct
+ */
+void symbolFree(Symbol* symbol);
+
+/***
  * Returns the symbol struct associated with the address
  */
 Symbol* getSymbolByAddress(char* address, SymbolTable* symbolTable);

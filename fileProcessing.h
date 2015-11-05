@@ -12,13 +12,13 @@
 /**
  * Processes the text segment of the object file
  */
-void parseTextSegment(FILE* inputFile, FILE* outputFile);
+void parseTextSegment(FILE* inputFile, FILE* outputFile, SymbolTable* symbolTable);
 
 
 /**
 * Processes the data segment of the object file
 */
-SymbolTable* parseDataSegment(FILE* inputFile);
+void parseDataSegment(FILE* inputFile, SymbolTable* symbolTable);
 
 /***
  * Accepts a string and prints to the output file

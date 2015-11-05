@@ -15,16 +15,6 @@
  */
 void symbolInit(Symbol* symbol){
 
-//    char nameArray[50];
-//    char typeArray[50];
-//    char valueArray[50];
-//    char addressArray[50];
-//
-//    memset(nameArray, '\0', sizeof(nameArray));
-//    memset(typeArray, '\0', sizeof(typeArray));
-//    memset(valueArray, '\0', sizeof(valueArray));
-//    memset(addressArray, '\0', sizeof(addressArray));
-
     symbol->name = (char *)calloc(100, sizeof(char *));
     symbol->type = (char *)calloc(100, sizeof(char *));
     symbol->value = (char *)calloc(100, sizeof(char *));
@@ -32,10 +22,17 @@ void symbolInit(Symbol* symbol){
 
 }
 
+void symbolFree(Symbol* symbol){
+
+    free(symbol->type);
+    free(symbol->name);
+    free(symbol->value);
+    free(symbol->address);
+}
+
 
 void symbolTableInit(SymbolTable* symbolTable){
 
-//    Symbol symbolArray[50];
     symbolTable->table = (Symbol *)malloc(100 * sizeof(Symbol *));
     symbolTable->size = 0;
 }
@@ -45,8 +42,8 @@ void symbolTableInit(SymbolTable* symbolTable){
  */
 void insertValueToTable(char* value, char* address, SymbolTable* symbolTable){
 
-    Symbol newTable;
-    symbolInit(&newTable);
+    Symbol newSymbol;
+    symbolInit(&newSymbol);
 
     // increment to the next empty value
     for(int i = 0; i < symbolTable->size; i++){
@@ -55,26 +52,36 @@ void insertValueToTable(char* value, char* address, SymbolTable* symbolTable){
 
     // handles the naming
     char* tempNameArray = (char *)calloc(100, sizeof(char *));
-    strcpy(newTable.name, "V0");
+    symbolTable->size++;
+    strcpy(newSymbol.name, "V0");
     sprintf(tempNameArray, "%d", symbolTable->size);
-    strcat(newTable.name, tempNameArray);
-    strcat(newTable.name, ":");
+    strcat(newSymbol.name, tempNameArray);
+    strcat(newSymbol.name, ":");
 
     // copies over the type
-    strcpy(newTable.type, ".word");
+    strcpy(newSymbol.type, ".word");
 
     // copies over the value
-    strcpy(newTable.value, value);
+    strcpy(newSymbol.value, value);
 
     // copies over the address
-    strcpy(newTable.address, address);
+    strcpy(newSymbol.address, address);
+    copySymbolToTable(&newSymbol, symbolTable);
 
     free(tempNameArray);
+    symbolFree(&newSymbol);
 
-    symbolTable->table = &newTable;
+}
 
-    symbolTable->size++;
 
+
+void copySymbolToTable(Symbol* symbol, SymbolTable* symbolTable){
+
+    symbolInit(symbolTable->table);
+    strcpy(symbolTable->table->name, symbol->name);
+    strcpy(symbolTable->table->value, symbol->value);
+    strcpy(symbolTable->table->type, symbol->type);
+    strcpy(symbolTable->table->address, symbol->address);
 }
 
 

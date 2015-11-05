@@ -19,7 +19,7 @@ int stringBinaryToInt(char* string){
         }
     }
 
-    return total;
+    return total/2;
 }
 
 
@@ -54,8 +54,8 @@ char* customSubString(unsigned short start, unsigned short end, char* inputStrin
 
 char* convertBinToDecString(char* binaryString){
 
-    char storageString[50];
-    char* stringPointer = &storageString[0];
+//    char storageString[50];
+    char* stringPointer = (char *)calloc(100, sizeof(char *));
     int immediate;
 
     // converts the binary string to an integer
