@@ -44,6 +44,7 @@ void parseTextSegment(FILE* inputFile, FILE* outputFile, SymbolTable* symbolTabl
     RegisterData* rtStruct;
     RegisterData* rdStruct;
     Symbol* symbolValue;
+    SymbolTable* beginningTable = &*symbolTable;
 
     // prints the '.text' section
     printToOutputFile(false, ".text", outputFile);
@@ -105,6 +106,9 @@ void parseTextSegment(FILE* inputFile, FILE* outputFile, SymbolTable* symbolTabl
 
                 // prints to output file
                 printToOutputFile(false, printedString, outputFile);
+                freeRegisterDataStruct(rsStruct);
+                freeRegisterDataStruct(rtStruct);
+                freeRegisterDataStruct(rdStruct);
             }
             // I-type instruction
         } else if (opCodeStruct->formatType == ITYPE){
@@ -122,7 +126,7 @@ void parseTextSegment(FILE* inputFile, FILE* outputFile, SymbolTable* symbolTabl
 
                 // converts the immediate and gets it to a printable format
                 sixteenImmediate = customSubString(16 , 32, pLine);
-                char* sixteenBitString = convertBinToDecString(sixteenImmediate);
+                char* sixteenBitString = convertBinToDecString(sixteenImmediate, false);
 
                 // builds the print string
                 strcat(printedString, opCodeStruct->name);
@@ -136,6 +140,8 @@ void parseTextSegment(FILE* inputFile, FILE* outputFile, SymbolTable* symbolTabl
 
                 // frees the string
                 free(sixteenBitString);
+                freeRegisterDataStruct(rsStruct);
+                freeRegisterDataStruct(rtStruct);
 
                 // prints the string
                 printToOutputFile(false, printedString, outputFile);
@@ -153,7 +159,7 @@ void parseTextSegment(FILE* inputFile, FILE* outputFile, SymbolTable* symbolTabl
                 sixteenImmediate = customSubString(16, 32, pLine);
 
                 // Gets the address that the 16-bit immediate references
-                char* tempAddress = convertBinToDecString(sixteenImmediate);
+                char* tempAddress = convertBinToDecString(sixteenImmediate, false);
 
                 symbolValue = getSymbolByAddress(tempAddress, symbolTable);
 
@@ -168,6 +174,11 @@ void parseTextSegment(FILE* inputFile, FILE* outputFile, SymbolTable* symbolTabl
                 // prints to output file
                 printToOutputFile(false, printedString, outputFile);
 
+                // frees values
+                free(tempAddress);
+                freeRegisterDataStruct(rsStruct);
+                freeRegisterDataStruct(rtStruct);
+
                 // will be true when the command is 'lw' or 'sw'
             } else if (strcmp(opCodeStruct->name, "sw") == 0 || strcmp(opCodeStruct->name, "lw") == 0){
 
@@ -177,7 +188,7 @@ void parseTextSegment(FILE* inputFile, FILE* outputFile, SymbolTable* symbolTabl
 
                 // reads the 'base' value
                 basePointer = customSubString(6 , 11, pLine);
-                base = stringBinaryToInt(basePointer);
+                base = stringBinaryToInt(basePointer, false);
 
                 // reads the 'rt' Value
                 rt = customSubString(11 , 16, pLine);
@@ -185,7 +196,7 @@ void parseTextSegment(FILE* inputFile, FILE* outputFile, SymbolTable* symbolTabl
 
                 // converts 16-bit and does the math to find the address
                 sixteenImmediate = customSubString(16, 32, pLine);
-                newAddress = stringBinaryToInt(sixteenImmediate) + base;
+                newAddress = stringBinaryToInt(sixteenImmediate, false) + base;
                 char* addressString = (char *)calloc(100, sizeof(char *));
                 sprintf(addressString, "%d", newAddress);
 
@@ -200,8 +211,10 @@ void parseTextSegment(FILE* inputFile, FILE* outputFile, SymbolTable* symbolTabl
                 strcat(printedString, "\n");
 
                 printToOutputFile(false, printedString, outputFile);
-
+                symbolTable = &*beginningTable;
                 free(addressString);
+                freeRegisterDataStruct(rtStruct);
+//                symbolFree(symbolValue);
             }
 
             // J-type instruction
@@ -256,7 +269,7 @@ void parseDataSegment(FILE* inputFile, SymbolTable* symbolTable){
         }
 
         // converts the binary string to a decimal string
-        lineValue = convertBinToDecString(pLine);
+        lineValue = convertBinToDecString(pLine, true);
 
         sprintf(tempNameArray, "%d", currentAddress);
 

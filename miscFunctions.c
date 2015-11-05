@@ -9,7 +9,7 @@
 #include "miscFunctions.h"
 
 
-int stringBinaryToInt(char* string){
+int stringBinaryToInt(char* string, bool halfValue){
 
     int total = 0;
     while (*string){
@@ -19,7 +19,12 @@ int stringBinaryToInt(char* string){
         }
     }
 
-    return total/2;
+    if(halfValue){
+
+        return total/2;
+    }
+
+    return total;
 }
 
 
@@ -52,14 +57,14 @@ char* customSubString(unsigned short start, unsigned short end, char* inputStrin
     return pLine;
 }
 
-char* convertBinToDecString(char* binaryString){
+char* convertBinToDecString(char* binaryString, bool halfValue){
 
 //    char storageString[50];
     char* stringPointer = (char *)calloc(100, sizeof(char *));
     int immediate;
 
     // converts the binary string to an integer
-    immediate = stringBinaryToInt(binaryString);
+    immediate = stringBinaryToInt(binaryString, halfValue);
 
     char* tempNameArray = (char *)calloc(100, sizeof(char *));
     sprintf(tempNameArray, "%d", immediate);

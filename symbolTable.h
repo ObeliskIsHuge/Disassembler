@@ -45,6 +45,11 @@ void insertValueToTable(char* value, char* address, SymbolTable* symbolTable);
  */
 void copySymbolToTable(Symbol* symbol, SymbolTable* symbolTable);
 
+/**
+ * Performs a deep copy of a symbol to another symbol
+ */
+void symbolCopy(Symbol* destSymbol, Symbol* copySymbol);
+
 /***
  * Frees symbol struct
  */

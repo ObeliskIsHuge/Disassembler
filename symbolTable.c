@@ -92,6 +92,9 @@ Symbol* getSymbolByAddress(char* address, SymbolTable* symbolTable){
 
         // will only be true if the addresses are equal
         if(strcmp(symbolTable->table->address, address) == 0){
+//            Symbol symbol;
+//            symbolInit(&symbol);
+//            symbolCopy(&symbol, symbolTable->table);
 
             return *&symbolTable->table;
         }
@@ -99,6 +102,15 @@ Symbol* getSymbolByAddress(char* address, SymbolTable* symbolTable){
     }
 
     return NULL;
+}
+
+
+void symbolCopy(Symbol* destSymbol, Symbol* copySymbol){
+
+    strcpy(destSymbol->type, copySymbol->type);
+    strcpy(destSymbol->address, copySymbol->address);
+    strcpy(destSymbol->name, copySymbol->name);
+    strcpy(destSymbol->value, copySymbol->value);
 }
 
 
@@ -138,10 +150,7 @@ void freeSymbolTable(SymbolTable* symbolTable){
     for(int i = 0; i < symbolTable->size; i++){
 
         symbol = *&symbolTable->table;
-        free(symbol->address);
-        free(symbol->name);
-        free(symbol->type);
-        free(symbol->value);
+        symbolFree(symbol);
         symbolTable->table++;
     }
 

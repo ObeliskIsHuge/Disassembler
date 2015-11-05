@@ -13,7 +13,7 @@
 #define OPCODEFIELDSIZE 6
 #define OPCODENAMESIZE 5
 
-OpCodeData opCodeTable[OPCODETABLESIZE] = {
+static OpCodeData opCodeTable[OPCODETABLESIZE] = {
 
         {"000000", "n/a", RTYPE},
         {"000001", "bltz", ITYPE},
