@@ -30,6 +30,13 @@ void symbolFree(Symbol* symbol){
     free(symbol->address);
 }
 
+void symbolReset(Symbol* symbol){
+    memset(symbol->name, 0 , sizeof(symbol->name));
+    memset(symbol->type, 0 , sizeof(symbol->type));
+    memset(symbol->value, 0 , sizeof(symbol->value));
+    memset(symbol->address, 0 , sizeof(symbol->address));
+}
+
 
 void symbolTableInit(SymbolTable* symbolTable){
 

@@ -30,6 +30,11 @@ typedef struct _SymbolTable SymbolTable;
  */
 void symbolInit(Symbol* symbol);
 
+/**
+ * Resets the arrays in the symbol
+ */
+void symbolReset(Symbol* symbol);
+
 /***
  * Creates a Valid Symbol Table
  */

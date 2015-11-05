@@ -46,6 +46,13 @@ void parseTextSegment(FILE* inputFile, FILE* outputFile, SymbolTable* symbolTabl
     Symbol* symbolValue;
     SymbolTable* beginningTable = &*symbolTable;
 
+    // allocate the values
+    opCodeInit(opCodeStruct);
+    opCodeInit(functStruct);
+    registerDataInit(rsStruct);
+    registerDataInit(rtStruct);
+    registerDataInit(rdStruct);
+
     // prints the '.text' section
     printToOutputFile(false, ".text", outputFile);
     printToOutputFile(false, "main:\t", outputFile);
@@ -82,21 +89,22 @@ void parseTextSegment(FILE* inputFile, FILE* outputFile, SymbolTable* symbolTabl
             } else {
                 // handles rs info
                 rs = customSubString(6 , 10, pLine);
-                rsStruct = FindRegisterDataByBits(rs);
+                FindRegisterDataByBits(rs, rsStruct);
                 free(rs);
 
                 // handles rt info
                 rt = customSubString(10 , 15, pLine);
-                rtStruct = FindRegisterDataByBits(rt);
+                FindRegisterDataByBits(rt, rtStruct);
                 free(rt);
 
                 // handles rd info
                 rd = customSubString(15 , 20, pLine);
-                rdStruct = FindRegisterDataByBits(rd);
+                FindRegisterDataByBits(rd, rtStruct);
                 free(rd);
 
                 //TODO what to do here?
                 shamt = customSubString(20 , 25, pLine);
+                free(shamt);
 
                 // Builds the string that will be printed
                 strcat(printedString, functStruct->name);
@@ -110,12 +118,12 @@ void parseTextSegment(FILE* inputFile, FILE* outputFile, SymbolTable* symbolTabl
 
                 // prints to output file
                 printToOutputFile(false, printedString, outputFile);
-                freeRegisterDataStruct(rsStruct);
-                freeRegisterDataStruct(rtStruct);
-                freeRegisterDataStruct(rdStruct);
+                resetRegisterData(rsStruct);
+                resetRegisterData(rtStruct);
+                resetRegisterData(rdStruct);
             }
 
-            freeOpCodeData(functStruct);
+            resetOpCode(functStruct);
             // I-type instruction
         } else if (opCodeStruct->formatType == ITYPE){
 
@@ -124,12 +132,12 @@ void parseTextSegment(FILE* inputFile, FILE* outputFile, SymbolTable* symbolTabl
 
                 // Gets the 'rs' register data
                 rs = customSubString(6 , 12, pLine);
-                rsStruct = FindRegisterDataByBits(rs);
+                FindRegisterDataByBits(rs, rsStruct);
                 free(rs);
 
                 // Gets the 'rt' register data
                 rt = customSubString(12 , 16, pLine);
-                rtStruct = FindRegisterDataByBits(rt);
+                FindRegisterDataByBits(rt, rtStruct);
                 free(rt);
 
                 // converts the immediate and gets it to a printable format
@@ -149,8 +157,8 @@ void parseTextSegment(FILE* inputFile, FILE* outputFile, SymbolTable* symbolTabl
 
                 // frees the string
                 free(sixteenBitString);
-                freeRegisterDataStruct(rsStruct);
-                freeRegisterDataStruct(rtStruct);
+                resetRegisterData(rsStruct);
+                resetRegisterData(rtStruct);
 
                 // prints the string
                 printToOutputFile(false, printedString, outputFile);
@@ -159,12 +167,12 @@ void parseTextSegment(FILE* inputFile, FILE* outputFile, SymbolTable* symbolTabl
 
                 // Gets the 'rs' register data
                 rs = customSubString(6 , 11, pLine);
-                rsStruct = FindRegisterDataByBits(rs);
+                FindRegisterDataByBits(rs, rsStruct);
                 free(rs);
 
                 // Gets the 'rt' register data
                 rt = customSubString(11 , 16, pLine);
-                rtStruct = FindRegisterDataByBits(rt);
+                FindRegisterDataByBits(rt, rtStruct);
                 free(rt);
 
                 sixteenImmediate = customSubString(16, 32, pLine);
@@ -188,8 +196,9 @@ void parseTextSegment(FILE* inputFile, FILE* outputFile, SymbolTable* symbolTabl
 
                 // frees values
                 free(tempAddress);
-                freeRegisterDataStruct(rsStruct);
-                freeRegisterDataStruct(rtStruct);
+                resetRegisterData(rsStruct);
+                resetRegisterData(rtStruct);
+                symbolReset(symbolValue);
 
                 // will be true when the command is 'lw' or 'sw'
             } else if (strcmp(opCodeStruct->name, "sw") == 0 || strcmp(opCodeStruct->name, "lw") == 0){
@@ -205,7 +214,7 @@ void parseTextSegment(FILE* inputFile, FILE* outputFile, SymbolTable* symbolTabl
 
                 // reads the 'rt' Value
                 rt = customSubString(11 , 16, pLine);
-                rtStruct = FindRegisterDataByBits(rt);
+                FindRegisterDataByBits(rt, rtStruct);
                 free(rt);
 
                 // converts 16-bit and does the math to find the address
@@ -228,7 +237,8 @@ void parseTextSegment(FILE* inputFile, FILE* outputFile, SymbolTable* symbolTabl
                 printToOutputFile(false, printedString, outputFile);
                 symbolTable = &*beginningTable;
                 free(addressString);
-                freeRegisterDataStruct(rtStruct);
+                symbolReset(symbolValue);
+                resetRegisterData(rtStruct);
             }
 
             // J-type instruction
@@ -244,8 +254,15 @@ void parseTextSegment(FILE* inputFile, FILE* outputFile, SymbolTable* symbolTabl
         memset(printedStringArray, '\0', sizeof(printedStringArray));
 
         fgets(line, MAX_LINE_SIZE, inputFile);
-        freeOpCodeData(opCodeStruct);
+        resetOpCode(opCodeStruct);
     }
+
+    // free all the structs
+    freeOpCodeData(opCodeStruct);
+    freeOpCodeData(functStruct);
+    freeRegisterDataStruct(rsStruct);
+    freeRegisterDataStruct(rtStruct);
+    freeRegisterDataStruct(rdStruct);
 
 }
 

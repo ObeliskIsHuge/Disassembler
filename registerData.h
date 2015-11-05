@@ -20,7 +20,7 @@ typedef struct _RegisterData RegisterData;
 /***
  * Returns the RegisterData struct that corresponds to the given bits
  */
-RegisterData* FindRegisterDataByBits(char* bits);
+void FindRegisterDataByBits(char* bits, RegisterData* registerData);
 
 /***
  * Creates a valid RegisterData Struct
@@ -31,6 +31,11 @@ void registerDataInit(RegisterData* registerData);
  * Frees the data from a RegisterData Struct
  */
 void registerDataFree(RegisterData* registerData);
+
+/***
+ * Resets the register Data struct
+ */
+void resetRegisterData(RegisterData* registerData);
 
 /***
  * Frees the memory of a register Data struct

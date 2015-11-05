@@ -29,4 +29,9 @@ void opCodeInit(OpCodeData* opCodeData);
  */
 void freeOpCodeData(OpCodeData* opCode);
 
+/**
+ * Clears the arrays of an opCodeData Struct
+ */
+void resetOpCode(OpCodeData* opCode);
+
 #endif //DISSASEMBLER_OPCODEDATA_H

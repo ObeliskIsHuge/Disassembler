@@ -70,6 +70,14 @@ OpCodeData* FindOpCodeByBits(char* bits){
 
 }
 
+
+void resetOpCode(OpCodeData* opCode){
+
+    memset(opCode->bits, 0 , sizeof(opCode->bits));
+    memset(opCode->name, 0 , sizeof(opCode->name));
+    opCode->formatType = -1;
+}
+
 void freeOpCodeData(OpCodeData* opCode){
 
     free(opCode->bits);

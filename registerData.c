@@ -58,29 +58,30 @@ void registerDataFree(RegisterData* registerData){
 
 }
 
-RegisterData* FindRegisterDataByBits(char* bits){
+void FindRegisterDataByBits(char* bits, RegisterData* registerData){
 
     for(unsigned int i = 0; i < TOTALAMOUNTOFREGISTERS; i++){
 
         if(strcmp(registerTable[i].bits, bits) == 0){
 
             RegisterData foundRegister = registerTable[i];
-            RegisterData returnRegister;
-            registerDataInit(&returnRegister);
 
             // copy the strings over
-            strcpy(returnRegister.bits, foundRegister.bits);
-            strcpy(returnRegister.registerName, foundRegister.registerName);
+            strcpy(registerData->bits, foundRegister.bits);
+            strcpy(registerData->registerName, foundRegister.registerName);
 
             // copies over the register field
-            returnRegister.registerField = foundRegister.registerField;
-
-            RegisterData* returnPointer = &returnRegister;
-            return returnPointer;
+            registerData->registerField = foundRegister.registerField;
         }
     }
+}
 
-    return NULL;
+
+void resetRegisterData(RegisterData* registerData){
+
+    memset(registerData->bits, 0 , sizeof(registerData->bits));
+    memset(registerData->registerName, 0 , sizeof(registerData->registerName));
+    registerData->registerField = -1;
 }
 
 
