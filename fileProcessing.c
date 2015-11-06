@@ -11,6 +11,7 @@
 #include "miscFunctions.h"
 #include "opCodeData.h"
 #include "registerData.h"
+#include "labelStruct.h"
 
 
 #define MAX_LINE_SIZE 150
@@ -47,6 +48,7 @@ void parseTextSegment(FILE* inputFile, FILE* outputFile, SymbolTable* symbolTabl
     RegisterData rtData;
     RegisterData rdData;
     Symbol symbolData;
+    LabelTable labelTable;
 
     // sturcts that will be used to hold to the register information
     OpCodeData* opCodeStruct = &opCodeData;
@@ -54,6 +56,7 @@ void parseTextSegment(FILE* inputFile, FILE* outputFile, SymbolTable* symbolTabl
     RegisterData* rsStruct = &rsData;
     RegisterData* rtStruct = &rtData;
     RegisterData* rdStruct = &rdData;
+    LabelTable* labelTableStruct = &labelTable;
     Symbol* symbolValue = &symbolData;
     Symbol* beginningSymbol = *&symbolTable->table;
 
@@ -64,6 +67,7 @@ void parseTextSegment(FILE* inputFile, FILE* outputFile, SymbolTable* symbolTabl
     registerDataInit(rtStruct);
     registerDataInit(rdStruct);
     symbolInit(symbolValue);
+
 
     // prints the '.text' section
     printToOutputFile(false, ".text\n", outputFile);
@@ -293,6 +297,54 @@ void parseTextSegment(FILE* inputFile, FILE* outputFile, SymbolTable* symbolTabl
 
     freeSymbolTable(symbolTable);
 
+}
+
+
+void buildLabelTable(FILE* inputFile, LabelTable* labelTable){
+
+    char line[MAX_LINE_SIZE];
+    char* pLine = &line[0];
+    int address = WORD_SEGMENT_START;
+    int jumpAddress;
+    char* opCode;
+    char* jumpBits;
+    char* nameString = (char *)calloc(100, sizeof(char *));
+
+    OpCodeData opCodeData;
+    OpCodeData* opCodeStruct = &opCodeData;
+    opCodeInit(opCodeStruct);
+
+    //  keeps running until the end of the file is found
+    while(!feof(inputFile)){
+
+        memset(line, '\0', sizeof(line));
+        memset(nameString, '\0', sizeof(nameString));
+        fgets(line, MAX_LINE_SIZE, inputFile);
+
+
+        // break the loop if we process a new line character or a blank line
+        if(strcmp(pLine, "\n") == 0 || strcmp(pLine, "") == 0){
+            break;
+        }
+
+        opCode = customSubString(0 , 6 , pLine);
+        FindOpCodeByBits(opCode,  opCodeStruct);
+        free(opCode);
+
+        // will be true when the instruction is a jump
+        if(strcmp(opCodeStruct->name,"j")){
+            labelTable->size++;
+            jumpBits = customSubString(6 , 32, pLine);
+            jumpAddress = stringBinaryToInt(jumpBits, false) + 1;
+            strcat(nameString, "L0");
+            sprintf(nameString, "%d", labelTable->size);
+
+            insertToLabelTable(nameString, jumpAddress, labelTable);
+        }
+    }
+
+    freeOpCodeData(opCodeStruct);
+    free(nameString);
 }
 
 

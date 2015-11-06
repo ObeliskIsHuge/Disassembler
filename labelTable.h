@@ -9,7 +9,9 @@
 
 struct _labelTable{
 
-    LabelData* labelTable;
+    LabelData* table;
+    int size;
+    int* addresses;
 };
 
 
@@ -28,5 +30,5 @@ void labelTableFree(LabelTable* labelTable);
 /***
  * Inserts a label into the table
  */
-void insertToLabelTable(LabelData* labelData, LabelTable* labelTable);
+void insertToLabelTable(char* labelName, int address, LabelTable* labelTable);
 #endif //DISASSEMBLER_LABELTABLE_H

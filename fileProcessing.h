@@ -8,7 +8,7 @@
 #include <stdio.h>
 #include <stdbool.h>
 #include "symbolTable.h"
-
+#include "labelTable.h"
 /**
  * Processes the text segment of the object file
  */
@@ -24,5 +24,10 @@ void parseDataSegment(FILE* inputFile, SymbolTable* symbolTable);
  * Accepts a string and prints to the output file
  */
 void printToOutputFile(bool includeSpace , char* string, FILE* outputFile);
+
+/***
+ * Builds the label table
+ */
+void buildLabelTable(FILE* inputFile, LabelTable* labelTable);
 
 #endif //DISSASEMBLER_FILEPROCESSING_H
