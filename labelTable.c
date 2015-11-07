@@ -19,6 +19,19 @@ void labelTableInit(LabelTable* labelTable){
  */
 void labelTableFree(LabelTable* labelTable){
 
+    int distance = 0;
+
+    for(int i = 0; i < labelTable->size; i++){
+
+        free(labelTable->table->labelName);
+        distance++;
+        labelTable->table++;
+    }
+
+    for(int i = 0; i < distance; i++){
+        labelTable->table--;
+    }
+
     free(labelTable->table);
     free(labelTable->addresses);
 }

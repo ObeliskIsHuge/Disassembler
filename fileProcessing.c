@@ -73,7 +73,7 @@ void parseTextSegment(FILE* inputFile, FILE* outputFile, SymbolTable* symbolTabl
     symbolInit(symbolValue);
 
     // build the label table
-    buildLabelTable(inputFile, *&pLabelTable);
+    buildLabelTable(inputFile, pLabelTable);
 
     // return the input file to the beginning
     rewind(inputFile);
@@ -292,6 +292,7 @@ void parseTextSegment(FILE* inputFile, FILE* outputFile, SymbolTable* symbolTabl
             printToOutputFile(space, printedString, outputFile);
             space = true;
             free(twoSixImmediate);
+            free(jumpLabel);
 
         }
 
@@ -307,7 +308,7 @@ void parseTextSegment(FILE* inputFile, FILE* outputFile, SymbolTable* symbolTabl
 
     printToOutputFile(false, "\n", outputFile);
     symbolTable->table = *&beginningSymbol;
-//    labelTableFree(pLabelTable); TODO fix this when done
+    labelTableFree(pLabelTable);
     // free all the structs
     freeOpCodeData(opCodeStruct);
     freeOpCodeData(functStruct);
@@ -368,8 +369,9 @@ void buildLabelTable(FILE* inputFile, LabelTable* labelTable){
             sprintf(tempNameArray, "%d", labelTable->size);
             strcat(nameString, tempNameArray);
 
-            insertToLabelTable(nameString, jumpAddress, *&labelTable);
+            insertToLabelTable(nameString, jumpAddress, labelTable);
             free(tempNameArray);
+            free(jumpBits);
             // will be true when the current command is beq
         } else if (strcmp(opCodeStruct->name, "beq") == 0){
 
@@ -378,7 +380,7 @@ void buildLabelTable(FILE* inputFile, LabelTable* labelTable){
             strcpy(nameString, "L0");
             sprintf(tempNameArray, "%d", labelTable->size);
             strcat(nameString, tempNameArray);
-            insertToLabelTable(nameString, address + 2, *&labelTable);
+            insertToLabelTable(nameString, address + 2, labelTable);
             free(tempNameArray);
 
         }
