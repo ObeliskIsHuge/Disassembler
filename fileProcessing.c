@@ -279,7 +279,7 @@ void parseTextSegment(FILE* inputFile, FILE* outputFile, SymbolTable* symbolTabl
         } else {
             twoSixImmediate = customSubString(6 , 32, pLine);
             jumpAddress = stringBinaryToInt(twoSixImmediate, false);
-            jumpAddress++;
+//            jumpAddress++;
             jumpLabel = findLabelAtAddress(jumpAddress, pLabelTable);
 
             strcat(printedString, opCodeStruct->name);
@@ -361,7 +361,7 @@ void buildLabelTable(FILE* inputFile, LabelTable* labelTable){
             char* tempNameArray = (char *)calloc(100, sizeof(char *));
             labelTable->size++;
             jumpBits = customSubString(6 , 32, pLine);
-            jumpAddress = stringBinaryToInt(jumpBits, false) + 1;
+            jumpAddress = stringBinaryToInt(jumpBits, false);
             strcpy(nameString, "L0");
             sprintf(tempNameArray, "%d", labelTable->size);
             strcat(nameString, tempNameArray);
