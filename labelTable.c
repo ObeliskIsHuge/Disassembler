@@ -64,6 +64,14 @@ char* findLabelAtAddress(int labelAddress, LabelTable* labelTable){
             }
             return returnString;
         }
+
+        labelTable->table++;
+        distance++;
+    }
+
+    // return to the beginning of the array
+    for(int i = 0; i < distance; i++){
+        labelTable->table--;
     }
 
     free(returnString);

@@ -211,8 +211,8 @@ void parseTextSegment(FILE* inputFile, FILE* outputFile, SymbolTable* symbolTabl
                 free(rt);
 
                 // Gets the address that the 16-bit immediate references
-                char* tempLabel = findLabelAtAddress(currentLine - 2, pLabelTable);
-                free(sixteenImmediate);
+                char* tempLabel = findLabelAtAddress(currentLine + 2, pLabelTable);
+//                free(sixteenImmediate);
 
                 strcat(printedString, opCodeStruct->name);
                 strcat(printedString, "\t");
@@ -221,6 +221,7 @@ void parseTextSegment(FILE* inputFile, FILE* outputFile, SymbolTable* symbolTabl
                 strcat(printedString, rtStruct->registerName);
                 strcat(printedString, ", ");
                 strcat(printedString, tempLabel);
+                strcat(printedString, "\n");
 
                 // prints to output file
                 printToOutputFile(space, printedString, outputFile);
