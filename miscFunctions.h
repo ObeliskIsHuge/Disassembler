@@ -9,7 +9,7 @@
 /***
  * Takes a binary string and returns the integer value
  */
-int stringBinaryToInt(char* string, bool halfValue);
+long stringBinaryToInt(char* string, bool halfValue);
 
 /***
  * Function returns the strings between the start and end indexes

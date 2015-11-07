@@ -9,9 +9,9 @@
 #include "miscFunctions.h"
 
 
-int stringBinaryToInt(char* string, bool halfValue){
+long stringBinaryToInt(char* string, bool halfValue){
 
-    int total = 0;
+    long total = 0;
     while (*string){
         total *= 2;
         if (*string++ == '1'){
@@ -62,13 +62,13 @@ char* customSubString(unsigned short start, unsigned short end, char* inputStrin
 char* convertBinToDecString(char* binaryString, bool halfValue){
 
     char* stringPointer = (char *)calloc(100, sizeof(char *));
-    int immediate;
+    long immediate;
 
     // converts the binary string to an integer
     immediate = stringBinaryToInt(binaryString, halfValue);
 
     char* tempNameArray = (char *)calloc(100, sizeof(char *));
-    sprintf(tempNameArray, "%d", immediate);
+    sprintf(tempNameArray, "%li", immediate);
 
     // copies the string over to a permanent location
     strcpy(stringPointer, tempNameArray);

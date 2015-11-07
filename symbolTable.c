@@ -119,10 +119,11 @@ void symbolCopy(Symbol* destSymbol, Symbol* copySymbol){
 }
 
 
-void printSymbolTable(FILE* outputFile, SymbolTable* symbolTable){
+void printSymbolTable(FILE* outputFile, SymbolTable* symbolTable, bool variablesPrinted){
 
     char* pLine = (char *)calloc(100, sizeof(char *));
     Symbol symbolAtIndex;
+    bool space = true;
 
     // prints the .data text
     printToOutputFile(false, ".data\n", outputFile);
@@ -132,18 +133,22 @@ void printSymbolTable(FILE* outputFile, SymbolTable* symbolTable){
 
         symbolAtIndex = *symbolTable->table;
 
-        // builds and prints each line of the '.data' section
-        strcat(pLine, symbolAtIndex.name);
-        strcat(pLine, ":      ");
-        strcat(pLine, symbolAtIndex.type);
-        strcat(pLine, " ");
-        // add an extra space just for zero values
-        if(strcmp(symbolAtIndex.value, "0") == 0){
+        // will be true when variables have been refrenced
+        if(variablesPrinted) {
+            // builds and prints each line of the '.data' section
+            strcat(pLine, symbolAtIndex.name);
+            strcat(pLine, ":      ");
+            strcat(pLine, symbolAtIndex.type);
             strcat(pLine, " ");
+            // add an extra space just for zero values
+            if (strcmp(symbolAtIndex.value, "0") == 0) {
+                strcat(pLine, " ");
+            }
+            space = false;
         }
         strcat(pLine, symbolAtIndex.value);
         strcat(pLine, "\n");
-        printToOutputFile(false, pLine, outputFile);
+        printToOutputFile(space, pLine, outputFile);
         symbolTable->table++;
         memset(pLine, '\0', sizeof(pLine));
     }

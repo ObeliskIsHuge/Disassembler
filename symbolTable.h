@@ -6,6 +6,7 @@
 #define DISASSEMBLER_SYMBOLTABLE_H
 
 #include <stdio.h>
+#include <stdbool.h>
 
 struct _Symbol{
 
@@ -68,7 +69,7 @@ void getSymbolByAddress(char* address, SymbolTable* symbolTable, Symbol* symbol)
 /***
  * Prints the symbol table
  */
-void printSymbolTable(FILE* outputFile, SymbolTable* symbolTable);
+void printSymbolTable(FILE* outputFile, SymbolTable* symbolTable, bool variablesPrinted);
 
 /***
  * Frees the values of the Symbol table

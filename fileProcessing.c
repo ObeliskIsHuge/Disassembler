@@ -35,7 +35,7 @@ void parseTextSegment(FILE* inputFile, FILE* outputFile, SymbolTable* symbolTabl
     char* funct;
     char* sixteenImmediate;
     char* twoSixImmediate;
-    int jumpAddress;
+    long jumpAddress;
     char* jumpLabel;
     char printedStringArray[40];
     int currentLine = 0;
@@ -51,6 +51,7 @@ void parseTextSegment(FILE* inputFile, FILE* outputFile, SymbolTable* symbolTabl
     RegisterData rdData;
     Symbol symbolData;
     LabelTable labelTable;
+    bool variablesPrinted = false;
 
     // sturcts that will be used to hold to the register information
     OpCodeData* opCodeStruct = &opCodeData;
@@ -236,9 +237,10 @@ void parseTextSegment(FILE* inputFile, FILE* outputFile, SymbolTable* symbolTabl
                 // will be true when the command is 'lw' or 'sw'
             } else if (strcmp(opCodeStruct->name, "sw") == 0 || strcmp(opCodeStruct->name, "lw") == 0){
 
-                int base;
-                int newAddress;
+                long base;
+                long newAddress;
                 char* basePointer;
+                variablesPrinted = true;
 
                 // reads the 'base' value
                 basePointer = customSubString(6 , 11, pLine);
@@ -254,7 +256,7 @@ void parseTextSegment(FILE* inputFile, FILE* outputFile, SymbolTable* symbolTabl
                 sixteenImmediate = customSubString(16, 32, pLine);
                 newAddress = stringBinaryToInt(sixteenImmediate, false) + base;
                 char* addressString = (char *)calloc(100, sizeof(char *));
-                sprintf(addressString, "%d", newAddress);
+                sprintf(addressString, "%li", newAddress);
                 free(sixteenImmediate);
 
                 // Gets the address of the instruction
@@ -316,7 +318,7 @@ void parseTextSegment(FILE* inputFile, FILE* outputFile, SymbolTable* symbolTabl
     free(printedString);
 
     // prints the symbol table
-    printSymbolTable(outputFile, symbolTable);
+    printSymbolTable(outputFile, symbolTable, variablesPrinted);
     symbolTable->table = *&beginningSymbol;
 
     freeSymbolTable(symbolTable);
@@ -329,7 +331,7 @@ void buildLabelTable(FILE* inputFile, LabelTable* labelTable){
     char line[MAX_LINE_SIZE];
     char* pLine = &line[0];
     int address = WORD_SEGMENT_START;
-    int jumpAddress;
+    long jumpAddress;
     char* opCode;
     char* jumpBits;
     char* nameString = (char *)calloc(100, sizeof(char *));
