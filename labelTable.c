@@ -28,15 +28,23 @@ void labelTableFree(LabelTable* labelTable){
  */
 void insertToLabelTable(char* labelName, int address, LabelTable* labelTable){
 
+
+    int distance = 0;
     // increment to the next empty value
-    for(int i = 0; i < labelTable->size; i++){
+    for(int i = 1; i < labelTable->size; i++){
         labelTable->table++;
         labelTable->addresses++;
+        distance++;
     }
 
     labelTable->table->labelName = (char *)calloc(100, sizeof(char *));
-    labelTable->size++;
     strcpy(labelTable->table->labelName, labelName);
-    *labelTable->addresses =address;
+    *labelTable->addresses = address;
     labelTable->table->address = address;
+
+    // moves the pointers back
+    for(int i = 0; i < distance; i++){
+        labelTable->table--;
+        labelTable->addresses--;
+    }
 }

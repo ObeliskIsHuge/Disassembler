@@ -155,18 +155,15 @@ void printSymbolTable(FILE* outputFile, SymbolTable* symbolTable){
 
 void freeSymbolTable(SymbolTable* symbolTable){
 
-    //TODO this might not deallocating correctly
     Symbol* symbol;
     Symbol* beginningSymbol = *&symbolTable->table;
     // iterates over the entire array deallocating values
     for(int i = 0; i < symbolTable->size; i++){
 
-//        symbol = *&symbolTable->table;
         free(symbolTable->table->name);
         free(symbolTable->table->address);
         free(symbolTable->table->type);
         free(symbolTable->table->value);
-//        symbolFree(symbol);
         symbolTable->table++;
     }
 

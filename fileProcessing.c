@@ -56,7 +56,7 @@ void parseTextSegment(FILE* inputFile, FILE* outputFile, SymbolTable* symbolTabl
     RegisterData* rsStruct = &rsData;
     RegisterData* rtStruct = &rtData;
     RegisterData* rdStruct = &rdData;
-    LabelTable* labelTableStruct = &labelTable;
+    LabelTable* pLabelTable = &labelTable;
     Symbol* symbolValue = &symbolData;
     Symbol* beginningSymbol = *&symbolTable->table;
 
@@ -66,9 +66,14 @@ void parseTextSegment(FILE* inputFile, FILE* outputFile, SymbolTable* symbolTabl
     registerDataInit(rsStruct);
     registerDataInit(rtStruct);
     registerDataInit(rdStruct);
+    labelTableInit(pLabelTable);
     symbolInit(symbolValue);
 
+    // build the label table
+    buildLabelTable(inputFile, *&pLabelTable);
 
+    // return the input file to the beginning
+    rewind(inputFile);
     // prints the '.text' section
     printToOutputFile(false, ".text\n", outputFile);
     printToOutputFile(false, "main:   ", outputFile);
@@ -282,6 +287,7 @@ void parseTextSegment(FILE* inputFile, FILE* outputFile, SymbolTable* symbolTabl
 
     printToOutputFile(false, "\n", outputFile);
     symbolTable->table = *&beginningSymbol;
+    labelTableFree(pLabelTable);
     // free all the structs
     freeOpCodeData(opCodeStruct);
     freeOpCodeData(functStruct);
@@ -332,14 +338,18 @@ void buildLabelTable(FILE* inputFile, LabelTable* labelTable){
         free(opCode);
 
         // will be true when the instruction is a jump
-        if(strcmp(opCodeStruct->name,"j")){
+        if(strcmp(opCodeStruct->name,"j") == 0){
+
+            char* tempNameArray = (char *)calloc(100, sizeof(char *));
             labelTable->size++;
             jumpBits = customSubString(6 , 32, pLine);
             jumpAddress = stringBinaryToInt(jumpBits, false) + 1;
-            strcat(nameString, "L0");
-            sprintf(nameString, "%d", labelTable->size);
+            strcpy(nameString, "L0");
+            sprintf(tempNameArray, "%d", labelTable->size);
+            strcat(nameString, tempNameArray);
 
-            insertToLabelTable(nameString, jumpAddress, labelTable);
+            insertToLabelTable(nameString, jumpAddress, *&labelTable);
+            free(tempNameArray);
         }
     }
 
