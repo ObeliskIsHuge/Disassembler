@@ -31,4 +31,9 @@ void labelTableFree(LabelTable* labelTable);
  * Inserts a label into the table
  */
 void insertToLabelTable(char* labelName, int address, LabelTable* labelTable);
+
+/***
+ * Finds the label at the given address
+ */
+char * findLabelAtAddress(int labelAddress, LabelTable* labelTable);
 #endif //DISASSEMBLER_LABELTABLE_H

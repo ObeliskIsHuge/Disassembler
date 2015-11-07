@@ -26,8 +26,6 @@ void parseTextSegment(FILE* inputFile, FILE* outputFile, SymbolTable* symbolTabl
 
     char line[MAX_LINE_SIZE];
     char* pLine = line;
-
-
     // Declares variables that will be used to hold the bits
     char* opCode;
     char* rs;
@@ -37,7 +35,11 @@ void parseTextSegment(FILE* inputFile, FILE* outputFile, SymbolTable* symbolTabl
     char* funct;
     char* sixteenImmediate;
     char* twoSixImmediate;
+    int jumpAddress;
+    char* jumpLabel;
     char printedStringArray[40];
+    int currentLine = 0;
+    char* label;
     char* printedString = (char *)calloc(100, sizeof(char *));
     char* syscall = "00000000000000000000000000001100\n";
 
@@ -91,6 +93,14 @@ void parseTextSegment(FILE* inputFile, FILE* outputFile, SymbolTable* symbolTabl
             break;
         }
 
+        // checks to see if a label needs to be printed
+        label = findLabelAtAddress(currentLine, pLabelTable);
+        if(label != NULL){
+            strcat(label, ":  ");
+            printToOutputFile(false, label, outputFile);
+            free(label);
+
+        }
         opCode = customSubString(0 , 6 , pLine);
         FindOpCodeByBits(opCode,  opCodeStruct);
         free(opCode);
@@ -200,13 +210,9 @@ void parseTextSegment(FILE* inputFile, FILE* outputFile, SymbolTable* symbolTabl
                 FindRegisterDataByBits(rt, rtStruct);
                 free(rt);
 
-                sixteenImmediate = customSubString(16, 32, pLine);
-
                 // Gets the address that the 16-bit immediate references
-                char* tempAddress = convertBinToDecString(sixteenImmediate, false);
+                char* tempLabel = findLabelAtAddress(currentLine - 2, pLabelTable);
                 free(sixteenImmediate);
-
-                getSymbolByAddress(tempAddress, symbolTable, symbolValue);
 
                 strcat(printedString, opCodeStruct->name);
                 strcat(printedString, "\t");
@@ -214,14 +220,14 @@ void parseTextSegment(FILE* inputFile, FILE* outputFile, SymbolTable* symbolTabl
                 strcat(printedString, ", ");
                 strcat(printedString, rtStruct->registerName);
                 strcat(printedString, ", ");
-                strcat(printedString, symbolValue->name);
+                strcat(printedString, tempLabel);
 
                 // prints to output file
                 printToOutputFile(space, printedString, outputFile);
                 space = true;
 
                 // frees values
-                free(tempAddress);
+                free(tempLabel);
                 resetRegisterData(rsStruct);
                 resetRegisterData(rtStruct);
                 symbolReset(symbolValue);
@@ -270,8 +276,18 @@ void parseTextSegment(FILE* inputFile, FILE* outputFile, SymbolTable* symbolTabl
 
             // J-type instruction
         } else {
-            //TODO
             twoSixImmediate = customSubString(6 , 32, pLine);
+            jumpAddress = stringBinaryToInt(twoSixImmediate, false);
+            jumpAddress++;
+            jumpLabel = findLabelAtAddress(jumpAddress, pLabelTable);
+
+            strcat(printedString, opCodeStruct->name);
+            strcat(printedString, "    ");
+            strcat(printedString, jumpLabel);
+            strcat(printedString, "\n");
+
+            printToOutputFile(space, printedString, outputFile);
+            space = true;
             free(twoSixImmediate);
 
         }
@@ -282,12 +298,13 @@ void parseTextSegment(FILE* inputFile, FILE* outputFile, SymbolTable* symbolTabl
 
         fgets(line, MAX_LINE_SIZE, inputFile);
         resetOpCode(opCodeStruct);
+        currentLine++;
     }
 
 
     printToOutputFile(false, "\n", outputFile);
     symbolTable->table = *&beginningSymbol;
-    labelTableFree(pLabelTable);
+//    labelTableFree(pLabelTable); TODO fix this when done
     // free all the structs
     freeOpCodeData(opCodeStruct);
     freeOpCodeData(functStruct);
@@ -350,7 +367,19 @@ void buildLabelTable(FILE* inputFile, LabelTable* labelTable){
 
             insertToLabelTable(nameString, jumpAddress, *&labelTable);
             free(tempNameArray);
+            // will be true when the current command is beq
+        } else if (strcmp(opCodeStruct->name, "beq") == 0){
+
+            char* tempNameArray = (char *)calloc(100, sizeof(char *));
+            labelTable->size++;
+            strcpy(nameString, "L0");
+            sprintf(tempNameArray, "%d", labelTable->size);
+            strcat(nameString, tempNameArray);
+            insertToLabelTable(nameString, address + 2, *&labelTable);
+            free(tempNameArray);
+
         }
+        address++;
     }
 
     freeOpCodeData(opCodeStruct);

@@ -48,3 +48,24 @@ void insertToLabelTable(char* labelName, int address, LabelTable* labelTable){
         labelTable->addresses--;
     }
 }
+
+char* findLabelAtAddress(int labelAddress, LabelTable* labelTable){
+
+    int distance = 0;
+    char* returnString = (char *)calloc(100, sizeof(char *));
+
+    for(int i = 0; i < labelTable->size; i++){
+        // will be true when the addresses are equal
+        if(labelTable->table->address == labelAddress){
+            strcpy(returnString, labelTable->table->labelName);
+            // return to the beginning of the array
+            for(int i = 0; i < distance; i++){
+                labelTable->table--;
+            }
+            return returnString;
+        }
+    }
+
+    free(returnString);
+    return NULL;
+}
