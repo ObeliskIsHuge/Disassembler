@@ -121,7 +121,7 @@ void parseTextSegment(FILE* inputFile, FILE* outputFile, SymbolTable* symbolTabl
                 space = true;
 
                 // Will be true when the command is "div"
-            } else if (strcmp(opCodeStruct->name, "div") == 0){
+            } else if (strcmp(functStruct->name, "div") == 0){
 
                 rs = customSubString(6 , 11, pLine);
                 FindRegisterDataByBits(rs, rsStruct);
@@ -146,7 +146,7 @@ void parseTextSegment(FILE* inputFile, FILE* outputFile, SymbolTable* symbolTabl
                 resetRegisterData(rtStruct);
 
                 // will be true when the instruction is 'mfhi' or 'mflo'
-            } else if(strcmp(opCodeStruct->name, "mfhi") == 0 || strcmp(opCodeStruct->name, "mflo") == 0){
+            } else if(strcmp(functStruct->name, "mfhi") == 0 || strcmp(functStruct->name, "mflo") == 0){
 
                 // handles rt info
                 rd = customSubString(11 , 16, pLine);
@@ -165,7 +165,7 @@ void parseTextSegment(FILE* inputFile, FILE* outputFile, SymbolTable* symbolTabl
                 resetRegisterData(rdStruct);
 
                 // will be true when the instruction is 'mult'
-            } else if (strcmp(opCodeStruct->name, "mult") == 0){
+            } else if (strcmp(functStruct->name, "mult") == 0){
 
                 // handles rs info
                 rs = customSubString(6 , 11, pLine);
@@ -191,8 +191,8 @@ void parseTextSegment(FILE* inputFile, FILE* outputFile, SymbolTable* symbolTabl
                 resetRegisterData(rsStruct);
                 resetRegisterData(rtStruct);
                 // will be true when we're shifting values
-            } else if(strcmp(opCodeStruct->name, "sll") == 0 || strcmp(opCodeStruct->name, "sra") == 0
-                      || strcmp(opCodeStruct->name, "srl") == 0){
+            } else if(strcmp(functStruct->name, "sll") == 0 || strcmp(functStruct->name, "sra") == 0
+                      || strcmp(functStruct->name, "srl") == 0){
 
 
                 // handles rt info
@@ -249,8 +249,12 @@ void parseTextSegment(FILE* inputFile, FILE* outputFile, SymbolTable* symbolTabl
                 shamt = customSubString(21 , 26, pLine);
                 free(shamt);
 
+                if(strcmp(functStruct->name, "lb") == 0){
+                    strcat(printedString, "add");
+                } else {
+                    strcat(printedString, functStruct->name);
+                }
                 // Builds the string that will be printed
-                strcat(printedString, functStruct->name);
                 strcat(printedString, "    ");
                 strcat(printedString, rdStruct->registerName);
                 strcat(printedString, ", ");

@@ -103,7 +103,7 @@ void getSymbolByAddress(char* address, SymbolTable* symbolTable, Symbol* symbol)
 
         // will only be true if the addresses are equal
         if(strcmp(symbolTable->table->address, address) == 0){
-            
+
             symbolCopy(symbol, symbolTable->table);
             symbolTable->table->printed = true;
             break;
