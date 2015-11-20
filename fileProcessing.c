@@ -232,8 +232,9 @@ void parseTextSegment(FILE* inputFile, FILE* outputFile, SymbolTable* symbolTabl
             // I-type instruction
         } else if (opCodeStruct->formatType == ITYPE){
 
-            // checks to see if the instruction is 'addi'
-            if(strcmp(opCodeStruct->name, "addi") == 0){
+            // checks to see if the instruction is 'addi', 'ori', or 'slti'
+            if(strcmp(opCodeStruct->name, "addi") == 0 || strcmp(opCodeStruct->name, "ori") == 0
+               || strcmp(opCodeStruct->name, "slti") == 0 || strcmp(opCodeStruct->name,"xori")){
 
                 // Gets the 'rs' register data
                 rs = customSubString(6 , 11, pLine);
@@ -304,9 +305,9 @@ void parseTextSegment(FILE* inputFile, FILE* outputFile, SymbolTable* symbolTabl
                 resetRegisterData(rtStruct);
                 symbolReset(symbolValue);
 
-                // will be true when the command is 'lw' , 'sw' , 'lb'
+                // will be true when the command is 'lw' , 'sw' , 'lb', or 'sb'
             } else if (strcmp(opCodeStruct->name, "sw") == 0 || strcmp(opCodeStruct->name, "lw") == 0
-                       || strcmp(opCodeStruct->name, "lb") == 0){
+                       || strcmp(opCodeStruct->name, "lb") == 0 || strcmp(opCodeStruct->name, "sb") == 0){
 
                 long base;
                 long newAddress;
