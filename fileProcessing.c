@@ -102,6 +102,21 @@ void parseTextSegment(FILE* inputFile, FILE* outputFile, SymbolTable* symbolTabl
             free(label);
 
         }
+
+        // Checks to see if the line is syscall
+        if(strcmp(pLine, syscall) == 0){
+            strcpy(printedString, "syscall\n");
+            printToOutputFile(space, printedString, outputFile);
+            space = true;
+            // clear the arrays of previous data
+            memset(line, '\0', sizeof(line));
+            memset(printedString, '\0', sizeof(printedString));
+
+            fgets(line, MAX_LINE_SIZE, inputFile);
+//            resetOpCode(opCodeStruct);
+            currentLine++;
+            continue;
+        }
         opCode = customSubString(0 , 6 , pLine);
         FindOpCodeByBits(opCode,  opCodeStruct);
         free(opCode);
@@ -110,18 +125,10 @@ void parseTextSegment(FILE* inputFile, FILE* outputFile, SymbolTable* symbolTabl
         if(opCodeStruct->formatType == RTYPE){
 
             funct = customSubString(26 , 32, pLine);
-            FindOpCodeByBits(funct, functStruct);
+            FindFunctByBits(funct, functStruct);
             free(funct);
 
-            // checks to see if the command is syscall
-            if(strcmp(pLine, syscall) == 0){
-
-                strcpy(printedString, "syscall\n");
-                printToOutputFile(space, printedString, outputFile);
-                space = true;
-
-                // Will be true when the command is "div"
-            } else if (strcmp(functStruct->name, "div") == 0){
+            if (strcmp(functStruct->name, "div") == 0){
 
                 rs = customSubString(6 , 11, pLine);
                 FindRegisterDataByBits(rs, rsStruct);
@@ -149,7 +156,7 @@ void parseTextSegment(FILE* inputFile, FILE* outputFile, SymbolTable* symbolTabl
             } else if(strcmp(functStruct->name, "mfhi") == 0 || strcmp(functStruct->name, "mflo") == 0){
 
                 // handles rt info
-                rd = customSubString(11 , 16, pLine);
+                rd = customSubString(16 , 21, pLine);
                 FindRegisterDataByBits(rd, rdStruct);
                 free(rd);
 
@@ -211,7 +218,7 @@ void parseTextSegment(FILE* inputFile, FILE* outputFile, SymbolTable* symbolTabl
 
                 char* shamtBitString = convertBinToDecString(shamt, false);
                 // builds the print string
-                strcat(printedString, opCodeStruct->name);
+                strcat(printedString, functStruct->name);
                 strcat(printedString, "   ");
                 strcat(printedString, rtStruct->registerName);
                 strcat(printedString, ", ");
@@ -277,7 +284,8 @@ void parseTextSegment(FILE* inputFile, FILE* outputFile, SymbolTable* symbolTabl
 
             // checks to see if the instruction is 'addi', 'ori', or 'slti'
             if(strcmp(opCodeStruct->name, "addi") == 0 || strcmp(opCodeStruct->name, "ori") == 0
-               || strcmp(opCodeStruct->name, "slti") == 0 || strcmp(opCodeStruct->name,"xori") == 0){
+               || strcmp(opCodeStruct->name, "slti") == 0 || strcmp(opCodeStruct->name,"xori") == 0
+               || strcmp(opCodeStruct->name, "addiu") == 0 || strcmp(opCodeStruct->name, "andi") == 0){
 
                 // Gets the 'rs' register data
                 rs = customSubString(6 , 11, pLine);
@@ -313,7 +321,7 @@ void parseTextSegment(FILE* inputFile, FILE* outputFile, SymbolTable* symbolTabl
                 printToOutputFile(space, printedString, outputFile);
                 space = true;
                 // will be true when the instruction is 'beq'
-            } else if(strcmp(opCodeStruct->name, "beq") == 0){
+            } else if(strcmp(opCodeStruct->name, "beq") == 0 || (strcmp(opCodeStruct->name, "bne") == 0)){
 
                 // Gets the 'rs' register data
                 rs = customSubString(6 , 11, pLine);
@@ -429,6 +437,33 @@ void parseTextSegment(FILE* inputFile, FILE* outputFile, SymbolTable* symbolTabl
                 symbolReset(symbolValue);
                 resetRegisterData(rtStruct);
                 free(basePointer);
+            } else if (strcmp(opCodeStruct->name, "lui") == 0){
+
+                // reads the 'rt' Value
+                rt = customSubString(11 , 16, pLine);
+                FindRegisterDataByBits(rt, rtStruct);
+                free(rt);
+
+                // converts the immediate and gets it to a printable format
+                sixteenImmediate = customSubString(16 , 32, pLine);
+                char* sixteenBitString = convertBinToDecString(sixteenImmediate, false);
+                free(sixteenImmediate);
+
+                // builds the print string
+                strcat(printedString, opCodeStruct->name);
+                strcat(printedString, "   ");
+                strcat(printedString, rtStruct->registerName);
+                strcat(printedString, ", ");
+                strcat(printedString, sixteenBitString);
+                strcat(printedString, "\n");
+
+                // frees the string
+                free(sixteenBitString);
+                resetRegisterData(rsStruct);
+
+                // prints the string
+                printToOutputFile(space, printedString, outputFile);
+                space = true;
             }
 
             // J-type instruction
@@ -532,8 +567,9 @@ void buildLabelTable(FILE* inputFile, LabelTable* labelTable){
                 strcat(nameString, tempNameArray);
 
                 insertToLabelTable(nameString, jumpAddress, labelTable);
+            } else {
+                free(checkString);
             }
-            free(jumpBits);
             // will be true when the current command is beq
         } else if (strcmp(opCodeStruct->name, "beq") == 0 || strcmp(opCodeStruct->name, "blez") == 0
                                                              || strcmp(opCodeStruct->name, "bltz") == 0

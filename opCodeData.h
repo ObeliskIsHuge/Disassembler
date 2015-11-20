@@ -34,4 +34,9 @@ void freeOpCodeData(OpCodeData* opCode);
  */
 void resetOpCode(OpCodeData* opCode);
 
+/***
+ * Finds the funct by bits
+ */
+void FindFunctByBits(char* bits, OpCodeData* opCodeData);
+
 #endif //DISSASEMBLER_OPCODEDATA_H
