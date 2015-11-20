@@ -6,13 +6,13 @@
 #include <string.h>
 #include <stdlib.h>
 
-#define OPCODETABLESIZE 20
+#define OPCODETABLESIZE 50
 #define RTYPE 0
 #define ITYPE 1
 #define JTYPE 2
 #define OPCODEFIELDSIZE 6
 #define OPCODENAMESIZE 5
-
+//TODO blez and bltz
 static OpCodeData opCodeTable[OPCODETABLESIZE] = {
 
         {"000000", "n/a", RTYPE},
@@ -27,7 +27,13 @@ static OpCodeData opCodeTable[OPCODETABLESIZE] = {
         {"000010", "j", JTYPE},
         {"100010", "sub", RTYPE},
         {"001000", "addi", ITYPE},
+        {"100000", "lb", ITYPE},
+        {"010000", "mfhi", RTYPE},
+        {"010010", "mflo", RTYPE},
+        {"011000", "mult", RTYPE},
+        {"100100", "and", RTYPE},
         {"001100", "syscall", RTYPE},
+        {"011010", "div", RTYPE},
         {"101011", "sw", ITYPE},
         {"100000", "add", RTYPE},
         {"001001", "addiu", ITYPE},

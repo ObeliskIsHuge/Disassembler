@@ -119,7 +119,77 @@ void parseTextSegment(FILE* inputFile, FILE* outputFile, SymbolTable* symbolTabl
                 strcpy(printedString, "syscall\n");
                 printToOutputFile(space, printedString, outputFile);
                 space = true;
-                // isn't syscall
+
+                // Will be true when the command is "div"
+            } else if (strcmp(opCodeStruct->name, "div") == 0){
+
+                rs = customSubString(6 , 11, pLine);
+                FindRegisterDataByBits(rs, rsStruct);
+                free(rs);
+
+                // handles rt info
+                rt = customSubString(11 , 16, pLine);
+                FindRegisterDataByBits(rt, rtStruct);
+                free(rt);
+
+                strcat(printedString, functStruct->name);
+                strcat(printedString, "    ");
+                strcat(printedString, rsStruct->registerName);
+                strcat(printedString, ", ");
+                strcat(printedString, rtStruct->registerName);
+                strcat(printedString, "\n");
+
+                // prints to output file
+                printToOutputFile(space, printedString, outputFile);
+                space = true;
+                resetRegisterData(rsStruct);
+                resetRegisterData(rtStruct);
+
+                // will be true when the instruction is 'mfhi' or 'mflo'
+            } else if(strcmp(opCodeStruct->name, "mfhi") == 0 || strcmp(opCodeStruct->name, "mflo") == 0){
+
+                // handles rt info
+                rd = customSubString(11 , 16, pLine);
+                FindRegisterDataByBits(rd, rdStruct);
+                free(rd);
+
+                // Builds the string that will be printed
+                strcat(printedString, functStruct->name);
+                strcat(printedString, "    ");
+                strcat(printedString, rdStruct->registerName);
+                strcat(printedString, "\n");
+
+                // prints to output file
+                printToOutputFile(space, printedString, outputFile);
+                space = true;
+                resetRegisterData(rdStruct);
+
+                // will be true when the instruction is 'mult'
+            } else if (strcmp(opCodeStruct->name, "mult") == 0){
+
+                // handles rs info
+                rs = customSubString(6 , 11, pLine);
+                FindRegisterDataByBits(rs, rsStruct);
+                free(rs);
+
+                // handles rt info
+                rt = customSubString(11 , 16, pLine);
+                FindRegisterDataByBits(rt, rtStruct);
+                free(rt);
+
+                // Builds the string that will be printed
+                strcat(printedString, functStruct->name);
+                strcat(printedString, "    ");
+                strcat(printedString, rsStruct->registerName);
+                strcat(printedString, ", ");
+                strcat(printedString, rtStruct->registerName);
+                strcat(printedString, "\n");
+
+                // prints to output file
+                printToOutputFile(space, printedString, outputFile);
+                space = true;
+                resetRegisterData(rsStruct);
+                resetRegisterData(rtStruct);
             } else {
                 // handles rs info
                 rs = customSubString(6 , 11, pLine);
@@ -234,8 +304,9 @@ void parseTextSegment(FILE* inputFile, FILE* outputFile, SymbolTable* symbolTabl
                 resetRegisterData(rtStruct);
                 symbolReset(symbolValue);
 
-                // will be true when the command is 'lw' or 'sw'
-            } else if (strcmp(opCodeStruct->name, "sw") == 0 || strcmp(opCodeStruct->name, "lw") == 0){
+                // will be true when the command is 'lw' , 'sw' , 'lb'
+            } else if (strcmp(opCodeStruct->name, "sw") == 0 || strcmp(opCodeStruct->name, "lw") == 0
+                       || strcmp(opCodeStruct->name, "lb") == 0){
 
                 long base;
                 long newAddress;
@@ -335,6 +406,7 @@ void buildLabelTable(FILE* inputFile, LabelTable* labelTable){
     long jumpAddress;
     char* opCode;
     char* jumpBits;
+    char* offsetBits;
     char* nameString = (char *)calloc(100, sizeof(char *));
 
     OpCodeData opCodeData;
@@ -347,6 +419,7 @@ void buildLabelTable(FILE* inputFile, LabelTable* labelTable){
         memset(line, '\0', sizeof(line));
         memset(nameString, '\0', sizeof(nameString));
         fgets(line, MAX_LINE_SIZE, inputFile);
+        strcpy(nameString, "L0");
 
 
         // break the loop if we process a new line character or a blank line
@@ -357,33 +430,35 @@ void buildLabelTable(FILE* inputFile, LabelTable* labelTable){
         opCode = customSubString(0 , 6 , pLine);
         FindOpCodeByBits(opCode,  opCodeStruct);
         free(opCode);
+        char* tempNameArray = (char *)calloc(100, sizeof(char *));
 
         // will be true when the instruction is a jump
         if(strcmp(opCodeStruct->name,"j") == 0){
 
-            char* tempNameArray = (char *)calloc(100, sizeof(char *));
+
             labelTable->size++;
             jumpBits = customSubString(6 , 32, pLine);
             jumpAddress = stringBinaryToInt(jumpBits, false);
-            strcpy(nameString, "L0");
             sprintf(tempNameArray, "%d", labelTable->size);
             strcat(nameString, tempNameArray);
 
             insertToLabelTable(nameString, jumpAddress, labelTable);
-            free(tempNameArray);
             free(jumpBits);
             // will be true when the current command is beq
         } else if (strcmp(opCodeStruct->name, "beq") == 0){
 
-            char* tempNameArray = (char *)calloc(100, sizeof(char *));
             labelTable->size++;
-            strcpy(nameString, "L0");
             sprintf(tempNameArray, "%d", labelTable->size);
             strcat(nameString, tempNameArray);
             insertToLabelTable(nameString, address + 2, labelTable);
-            free(tempNameArray);
+
+            // will be true when the current command is blez or bltz
+        } else if (strcmp(opCodeStruct->name, "blez") == 0 || strcmp(opCodeStruct->name, "bltz") == 0){
+
+            labelTable->size++; //TODO
 
         }
+        free(tempNameArray);
         address++;
     }
 
