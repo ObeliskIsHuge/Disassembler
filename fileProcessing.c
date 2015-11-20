@@ -381,7 +381,7 @@ void parseTextSegment(FILE* inputFile, FILE* outputFile, SymbolTable* symbolTabl
                 // reads the 'base' value
                 basePointer = customSubString(6 , 11, pLine);
                 base = stringBinaryToInt(basePointer, false);
-                free(basePointer);
+
 
                 // reads the 'rt' Value
                 rt = customSubString(11 , 16, pLine);
@@ -398,11 +398,24 @@ void parseTextSegment(FILE* inputFile, FILE* outputFile, SymbolTable* symbolTabl
                 // Gets the address of the instruction
                 getSymbolByAddress(addressString, symbolTable, symbolValue);
 
+
                 strcat(printedString, opCodeStruct->name);
                 strcat(printedString, "     ");
                 strcat(printedString, rtStruct->registerName);
                 strcat(printedString, ", ");
-                strcat(printedString, symbolValue->name);
+
+                // Will be true when the value doesn't exist
+                if(strcmp(symbolValue->name, "") == 0){
+                    FindRegisterDataByBits(basePointer, rsStruct);
+                    strcat(printedString, "0(");
+                    strcat(printedString, rsStruct->registerName);
+                    strcat(printedString, ")");
+                    resetRegisterData(rsStruct);
+
+                } else {
+                    strcat(printedString, symbolValue->name);
+                }
+
                 strcat(printedString, "\n");
 
                 printToOutputFile(space, printedString, outputFile);
@@ -411,6 +424,7 @@ void parseTextSegment(FILE* inputFile, FILE* outputFile, SymbolTable* symbolTabl
                 free(addressString);
                 symbolReset(symbolValue);
                 resetRegisterData(rtStruct);
+                free(basePointer);
             }
 
             // J-type instruction

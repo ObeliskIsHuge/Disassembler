@@ -15,7 +15,7 @@
 //TODO blez and bltz
 static OpCodeData opCodeTable[OPCODETABLESIZE] = {
 
-        {"000000", "n/a", RTYPE},
+//        {"000000", "n/a", RTYPE},
         {"000001", "bltz", ITYPE},
         {"001010", "slti", ITYPE},
         {"000100", "beq", ITYPE},
