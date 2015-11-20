@@ -273,7 +273,7 @@ void parseTextSegment(FILE* inputFile, FILE* outputFile, SymbolTable* symbolTabl
 
             // checks to see if the instruction is 'addi', 'ori', or 'slti'
             if(strcmp(opCodeStruct->name, "addi") == 0 || strcmp(opCodeStruct->name, "ori") == 0
-               || strcmp(opCodeStruct->name, "slti") == 0 || strcmp(opCodeStruct->name,"xori")){
+               || strcmp(opCodeStruct->name, "slti") == 0 || strcmp(opCodeStruct->name,"xori") == 0){
 
                 // Gets the 'rs' register data
                 rs = customSubString(6 , 11, pLine);
