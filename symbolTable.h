@@ -14,6 +14,7 @@ struct _Symbol{
     char* type;
     char* value;
     char* address;
+    bool printed;
 };
 
 typedef struct _Symbol Symbol;

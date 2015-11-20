@@ -19,6 +19,7 @@ void symbolInit(Symbol* symbol){
     symbol->type = (char *)calloc(100, sizeof(char *));
     symbol->value = (char *)calloc(100, sizeof(char *));
     symbol->address = (char *)calloc(100, sizeof(char *));
+    symbol->printed = false;
 
 }
 
@@ -36,6 +37,7 @@ void symbolReset(Symbol* symbol){
     memset(symbol->type, 0 , sizeof(symbol->type));
     memset(symbol->value, 0 , sizeof(symbol->value));
     memset(symbol->address, 0 , sizeof(symbol->address));
+    symbol->printed = false;
 }
 
 
@@ -101,8 +103,9 @@ void getSymbolByAddress(char* address, SymbolTable* symbolTable, Symbol* symbol)
 
         // will only be true if the addresses are equal
         if(strcmp(symbolTable->table->address, address) == 0){
-
+            
             symbolCopy(symbol, symbolTable->table);
+            symbolTable->table->printed = true;
             break;
         }
         symbolTable->table++;
@@ -134,7 +137,7 @@ void printSymbolTable(FILE* outputFile, SymbolTable* symbolTable, bool variables
         symbolAtIndex = *symbolTable->table;
 
         // will be true when variables have been refrenced
-        if(variablesPrinted) {
+        if(symbolAtIndex.printed == true) {
             // builds and prints each line of the '.data' section
             strcat(pLine, symbolAtIndex.name);
             strcat(pLine, ":      ");
@@ -145,6 +148,8 @@ void printSymbolTable(FILE* outputFile, SymbolTable* symbolTable, bool variables
                 strcat(pLine, " ");
             }
             space = false;
+        } else {
+            space = true;
         }
         strcat(pLine, symbolAtIndex.value);
         strcat(pLine, "\n");
