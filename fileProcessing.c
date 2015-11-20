@@ -333,8 +333,12 @@ void parseTextSegment(FILE* inputFile, FILE* outputFile, SymbolTable* symbolTabl
                 FindRegisterDataByBits(rt, rtStruct);
                 free(rt);
 
+                // converts the immediate and gets it to a printable format
+                sixteenImmediate = customSubString(16 , 32, pLine);
+                int sixteenBit = stringBinaryToInt(sixteenImmediate, false);
+
                 // Gets the address that the 16-bit immediate references
-                char* tempLabel = findLabelAtAddress(currentLine + 2, pLabelTable);
+                char* tempLabel = findLabelAtAddress(currentLine + sixteenBit + 1, pLabelTable);
 //                free(sixteenImmediate);
 
                 strcat(printedString, opCodeStruct->name);
@@ -355,6 +359,7 @@ void parseTextSegment(FILE* inputFile, FILE* outputFile, SymbolTable* symbolTabl
                 resetRegisterData(rsStruct);
                 resetRegisterData(rtStruct);
                 symbolReset(symbolValue);
+                free(sixteenImmediate);
 
                 // will be true if the commands are 'blez' or 'bltz'
             } else if (strcmp(opCodeStruct->name,"blez") == 0 || strcmp(opCodeStruct->name, "bltz") == 0){
@@ -364,8 +369,11 @@ void parseTextSegment(FILE* inputFile, FILE* outputFile, SymbolTable* symbolTabl
                 FindRegisterDataByBits(rs, rsStruct);
                 free(rs);
 
+                sixteenImmediate = customSubString(16 , 32, pLine);
+                int sixteenBit = stringBinaryToInt(sixteenImmediate, false);
+
                 // Gets the address that the 16-bit immediate references
-                char* tempLabel = findLabelAtAddress(currentLine + 2, pLabelTable);
+                char* tempLabel = findLabelAtAddress(currentLine + sixteenBit + 1, pLabelTable);
                 strcat(printedString, opCodeStruct->name);
                 strcat(printedString, "\t");
                 strcat(printedString, rsStruct->registerName);
@@ -381,6 +389,7 @@ void parseTextSegment(FILE* inputFile, FILE* outputFile, SymbolTable* symbolTabl
                 free(tempLabel);
                 resetRegisterData(rsStruct);
                 symbolReset(symbolValue);
+                free(sixteenImmediate);
                 // will be true when the command is 'lw' , 'sw' , 'lb', or 'sb'
             } else if (strcmp(opCodeStruct->name, "sw") == 0 || strcmp(opCodeStruct->name, "lw") == 0
                        || strcmp(opCodeStruct->name, "lb") == 0 || strcmp(opCodeStruct->name, "sb") == 0){
@@ -527,6 +536,10 @@ void buildLabelTable(FILE* inputFile, LabelTable* labelTable){
     char* offsetBits;
     char* nameString = (char *)calloc(100, sizeof(char *));
     char* checkString;
+    char* rt;
+    RegisterData rtData;
+    RegisterData* rtStruct = &rtData;
+    registerDataInit(rtStruct);
 
     OpCodeData opCodeData;
     OpCodeData* opCodeStruct = &opCodeData;
@@ -575,30 +588,32 @@ void buildLabelTable(FILE* inputFile, LabelTable* labelTable){
                                                              || strcmp(opCodeStruct->name, "bltz") == 0
                                                                 || strcmp(opCodeStruct->name, "bne") == 0){
 
-            checkString = findLabelAtAddress(address + 2, labelTable);
+            // Gets the 'rt' register data
+            rt = customSubString(16, 32, pLine);
+            int sixteenBit = stringBinaryToInt(rt, false);
+            checkString = findLabelAtAddress(address + sixteenBit + 1, labelTable);
 
             // will be true when the value wasn't found in the table
             if(checkString == NULL){
+//                free(sixteenImmediate);
                 labelTable->size++;
                 sprintf(tempNameArray, "%d", labelTable->size);
                 strcat(nameString, tempNameArray);
-                insertToLabelTable(nameString, address + 2, labelTable);
+                insertToLabelTable(nameString, address + sixteenBit + 1, labelTable);
+//                free(sixteenBitString);
             } else {
                 free(checkString);
             }
+            free(rt);
 
             // will be true when the current command is blez or bltz
         }
-//        else if (strcmp(opCodeStruct->name, "blez") == 0 || strcmp(opCodeStruct->name, "bltz") == 0){
-//
-//            labelTable->size++; //TODO
-//
-//        }
         free(tempNameArray);
         address++;
     }
 
     freeOpCodeData(opCodeStruct);
+    freeRegisterDataStruct(rtStruct);
     free(nameString);
 }
 
