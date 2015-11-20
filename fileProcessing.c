@@ -345,7 +345,7 @@ void parseTextSegment(FILE* inputFile, FILE* outputFile, SymbolTable* symbolTabl
                 symbolReset(symbolValue);
 
                 // will be true if the commands are 'blez' or 'bltz'
-            } else if (strcmp(opCodeStruct->name,"blez") == 0 || strcmp(opCodeStruct->name, "bltz")){
+            } else if (strcmp(opCodeStruct->name,"blez") == 0 || strcmp(opCodeStruct->name, "bltz") == 0){
 
                 // Gets the 'rs' register data
                 rs = customSubString(6 , 11, pLine);
