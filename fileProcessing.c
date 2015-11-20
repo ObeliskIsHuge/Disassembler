@@ -214,7 +214,6 @@ void parseTextSegment(FILE* inputFile, FILE* outputFile, SymbolTable* symbolTabl
 
                 // gets the shift amount values
                 shamt = customSubString(21 , 26, pLine);
-                free(shamt);
 
                 char* shamtBitString = convertBinToDecString(shamt, false);
                 // builds the print string
@@ -231,6 +230,7 @@ void parseTextSegment(FILE* inputFile, FILE* outputFile, SymbolTable* symbolTabl
                 free(shamtBitString);
                 resetRegisterData(rdStruct);
                 resetRegisterData(rtStruct);
+                free(shamt);
 
                 // prints the string
                 printToOutputFile(space, printedString, outputFile);
@@ -583,6 +583,7 @@ void buildLabelTable(FILE* inputFile, LabelTable* labelTable){
             } else {
                 free(checkString);
             }
+            free(jumpBits);
             // will be true when the current command is beq
         } else if (strcmp(opCodeStruct->name, "beq") == 0 || strcmp(opCodeStruct->name, "blez") == 0
                                                              || strcmp(opCodeStruct->name, "bltz") == 0

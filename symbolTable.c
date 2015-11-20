@@ -62,6 +62,7 @@ void insertValueToTable(char* value, char* address, SymbolTable* symbolTable){
     symbolTable->table->value = (char *)calloc(100, sizeof(char *));
     symbolTable->table->type = (char *)calloc(100, sizeof(char *));
     symbolTable->table->name = (char *)calloc(100, sizeof(char *));
+    symbolTable->table->printed = false;
 
     // handles the naming
     char* tempNameArray = (char *)calloc(100, sizeof(char *));
@@ -93,6 +94,7 @@ void copySymbolToTable(Symbol* symbol, SymbolTable* symbolTable){
     strcpy(symbolTable->table->value, symbol->value);
     strcpy(symbolTable->table->type, symbol->type);
     strcpy(symbolTable->table->address, symbol->address);
+    symbolTable->table->printed = false;
 }
 
 
@@ -119,6 +121,7 @@ void symbolCopy(Symbol* destSymbol, Symbol* copySymbol){
     strcpy(destSymbol->address, copySymbol->address);
     strcpy(destSymbol->name, copySymbol->name);
     strcpy(destSymbol->value, copySymbol->value);
+    destSymbol->printed = false;
 }
 
 
