@@ -113,7 +113,6 @@ void parseTextSegment(FILE* inputFile, FILE* outputFile, SymbolTable* symbolTabl
             memset(printedString, '\0', sizeof(printedString));
 
             fgets(line, MAX_LINE_SIZE, inputFile);
-//            resetOpCode(opCodeStruct);
             currentLine++;
             continue;
         }
@@ -252,7 +251,6 @@ void parseTextSegment(FILE* inputFile, FILE* outputFile, SymbolTable* symbolTabl
                 FindRegisterDataByBits(rd, rdStruct);
                 free(rd);
 
-                //TODO what to do here?
                 shamt = customSubString(21 , 26, pLine);
                 free(shamt);
 
@@ -339,7 +337,6 @@ void parseTextSegment(FILE* inputFile, FILE* outputFile, SymbolTable* symbolTabl
 
                 // Gets the address that the 16-bit immediate references
                 char* tempLabel = findLabelAtAddress(currentLine + sixteenBit + 1, pLabelTable);
-//                free(sixteenImmediate);
 
                 strcat(printedString, opCodeStruct->name);
                 strcat(printedString, "\t");
@@ -479,7 +476,6 @@ void parseTextSegment(FILE* inputFile, FILE* outputFile, SymbolTable* symbolTabl
         } else {
             twoSixImmediate = customSubString(6 , 32, pLine);
             jumpAddress = stringBinaryToInt(twoSixImmediate, false);
-//            jumpAddress++;
             jumpLabel = findLabelAtAddress(jumpAddress, pLabelTable);
 
             strcat(printedString, opCodeStruct->name);
@@ -596,12 +592,10 @@ void buildLabelTable(FILE* inputFile, LabelTable* labelTable){
 
             // will be true when the value wasn't found in the table
             if(checkString == NULL){
-//                free(sixteenImmediate);
                 labelTable->size++;
                 sprintf(tempNameArray, "%d", labelTable->size);
                 strcat(nameString, tempNameArray);
                 insertToLabelTable(nameString, address + sixteenBit + 1, labelTable);
-//                free(sixteenBitString);
             } else {
                 free(checkString);
             }

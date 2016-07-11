@@ -12,7 +12,6 @@
 #define JTYPE 2
 #define OPCODEFIELDSIZE 6
 #define OPCODENAMESIZE 5
-//TODO blez and bltz
 static OpCodeData opCodeTable[OPCODETABLESIZE] = {
 
         {"000000", "n/a", RTYPE},
@@ -26,26 +25,11 @@ static OpCodeData opCodeTable[OPCODETABLESIZE] = {
         {"000110", "blez", ITYPE},
         {"100011", "lw", ITYPE},
         {"000010", "j", JTYPE},
-//        {"100010", "sub", RTYPE},
-//        {"100110", "xor", RTYPE},
         {"001110", "xori", ITYPE},
-//        {"101010", "slt", RTYPE},
-//        {"000000", "sll", RTYPE},
-//        {"000011", "sra", RTYPE},
-//        {"000010", "srl", RTYPE},
         {"001000", "addi", ITYPE},
         {"100000", "lb", ITYPE},
-//        {"010000", "mfhi", RTYPE},
-//        {"010010", "mflo", RTYPE},
-//        {"011000", "mult", RTYPE},
-//        {"100111", "nor", RTYPE},
-//        {"100101", "or", RTYPE},
-//        {"100100", "and", RTYPE},
-//        {"001100", "syscall", RTYPE},
-//        {"011010", "div", RTYPE},
         {"101011", "sw", ITYPE},
         {"101000", "sb", ITYPE},
-//        {"100000", "add", RTYPE},
         {"001001", "addiu", ITYPE},
 
 };
